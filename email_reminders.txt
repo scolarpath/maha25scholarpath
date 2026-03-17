@@ -1,0 +1,20 @@
+2026-03-15 23:40:53,701 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-15 23:40:53,701 - INFO - Added job "send_reminders" to job store "default"
+2026-03-15 23:40:53,701 - INFO - Scheduler started
+2026-03-15 23:40:53,709 - WARNING -  * Debugger is active!
+2026-03-15 23:40:53,710 - INFO -  * Debugger PIN: 716-736-727
+2026-03-15 23:41:32,753 - INFO - 127.0.0.1 - - [15/Mar/2026 23:41:32] "GET /home HTTP/1.1" 200 -
+2026-03-15 23:41:35,919 - INFO - 127.0.0.1 - - [15/Mar/2026 23:41:35] "[32mGET /set_language/en HTTP/1.1[0m" 302 -
+2026-03-15 23:41:35,926 - INFO - 127.0.0.1 - - [15/Mar/2026 23:41:35] "GET /home HTTP/1.1" 200 -
+2026-03-15 23:41:54,959 - INFO - 127.0.0.1 - - [15/Mar/2026 23:41:54] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-15 23:41:54,971 - INFO - 127.0.0.1 - - [15/Mar/2026 23:41:54] "GET /information HTTP/1.1" 200 -
+2026-03-15 23:42:11,781 - INFO - 127.0.0.1 - - [15/Mar/2026 23:42:11] "POST /search HTTP/1.1" 200 -
+2026-03-15 23:48:53,323 - INFO -  * Detected change in 'C:\\Users\\srush\\OneDrive\\Documents\\Desktop\\cep project\\app.py', reloading
+2026-03-15 23:48:53,633 - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-15 23:48:53,633 - Added job "send_reminders" to job store "default"
+2026-03-15 23:48:53,633 - Scheduler started
+2026-03-15 23:48:53,640 -  * Debugger is active!
+2026-03-15 23:48:53,641 -  * Debugger PIN: 716-736-727
+2026-03-15 23:49:06,455 - 127.0.0.1 - - [15/Mar/2026 23:49:06] "GET /information HTTP/1.1" 200 -
+2026-03-15 23:49:13,737 - 127.0.0.1 - - [15/Mar/2026 23:49:13] "POST /search HTTP/1.1" 200 -
+2026-03-15 23:51:20,729 -  * Detected change in 'C:\\Users\\srush\\OneDrive\\Documents\\Desktop\\cep project\\app.py', reloading

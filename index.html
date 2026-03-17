@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maha 25 Scholar Path</title>
+
+<style>
+
+body{
+font-family: Arial, sans-serif;
+margin:0;
+padding:0;
+display:flex;
+flex-direction:column;
+min-height:100vh;
+}
+
+header{
+background-color:#2c3e50;
+color:white;
+padding:20px;
+text-align:center;
+}
+
+nav a{
+color:white;
+margin:0 15px;
+text-decoration:none;
+font-weight:bold;
+}
+
+nav a:hover{
+text-decoration:underline;
+}
+
+main{
+flex:1;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+background-color:#f4f7f6;
+}
+
+.container{
+max-width:1000px;
+margin:40px auto;
+padding:20px;
+}
+
+h2{
+color:#1a2a6c;
+text-align:center;
+margin-bottom:30px;
+}
+
+.scheme-card{
+background:white;
+border-radius:8px;
+padding:20px;
+margin-bottom:20px;
+box-shadow:0 4px 6px rgba(0,0,0,0.1);
+border-left:5px solid #ffcc00;
+}
+
+.scheme-card h3{
+margin-top:0;
+color:#2c3e50;
+}
+
+.details{
+font-size:0.95rem;
+color:#555;
+line-height:1.6;
+}
+
+.tag{
+display:inline-block;
+background:#e1f5fe;
+color:#01579b;
+padding:4px 10px;
+border-radius:4px;
+font-size:0.8rem;
+margin-top:10px;
+}
+
+footer{
+background-color:#2c3e50;
+color:white;
+text-align:center;
+padding:15px;
+}
+
+footer a{
+color:#3498db;
+text-decoration:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>
+{% if session.get('language') == 'mr' %}
+महा 25 स्कॉलर पाथ
+{% else %}
+Maha 25 Scholar Path
+{% endif %}
+</h1>
+<div style="margin-top:20px;">
+
+
+<nav>
+
+<a href="/home">
+{% if session.get('language') == 'mr' %}
+मुख्यपृष्ठ
+{% else %}
+Home
+{% endif %}
+</a>
+
+<a href="/about">
+{% if session.get('language') == 'mr' %}
+माहिती
+{% else %}
+About
+{% endif %}
+</a>
+
+<a href="/contact">
+{% if session.get('language') == 'mr' %}
+संपर्क
+{% else %}
+Contact
+{% endif %}
+</a>
+
+<select id="lang-select" onchange="changeLanguage(this.value)">
+<option value="en" {% if session.get('language') == 'en' %}selected{% endif %}>English</option>
+<option value="mr" {% if session.get('language') == 'mr' %}selected{% endif %}>मराठी</option>
+</select>
+
+</nav>
+
+</header>
+
+<main>
+
+<h2>
+{% if session.get('language') == 'mr' %}
+स्कॉलर पाथ मध्ये आपले स्वागत आहे
+{% else %}
+Welcome to the Scholar Path
+{% endif %}
+</h2>
+
+
+
+
+<div class="container">
+
+<h2>
+{% if session.get('language') == 'mr' %}
+महाराष्ट्र शासन शिष्यवृत्ती योजना (वय 25 खाली)
+{% else %}
+Maharashtra Government Schemes (Under 25)
+{% endif %}
+</h2>
+
+<div class="scheme-card">
+<h3>Rajarshi Chhatrapati Shahu Maharaj Fee Reimbursement</h3>
+
+<p class="details">
+{% if session.get('language') == 'mr' %}
+EBC विद्यार्थ्यांसाठी व्यावसायिक अभ्यासक्रमाच्या फीचे 50% पर्यंत परतफेड.
+{% else %}
+Provides up to 50% reimbursement of tuition fees for students in professional courses.
+{% endif %}
+</p>
+
+<span class="tag">Income Limit: ₹8 Lakh</span> <span class="tag">Category: EBC / General</span>
+
+<p>
+<a href="https://mahadbt.maharashtra.gov.in" target="_blank">Official Details</a>
+</p>
+
+</div>
+
+<div class="scheme-card">
+
+<h3>Dr. Panjabrao Deshmukh Hostel Allowance</h3>
+
+<p class="details">
+{% if session.get('language') == 'mr' %}
+शेती कामगारांच्या मुलांसाठी 10 महिन्यांसाठी वसतिगृह भत्ता.
+{% else %}
+Hostel maintenance allowance for children of farmers pursuing professional education.
+{% endif %}
+</p>
+
+<span class="tag">Benefit: ₹30,000</span>
+
+<p>
+<a href="https://mahadbt.maharashtra.gov.in" target="_blank">Official Details</a>
+</p>
+
+</div>
+
+<div class="scheme-card">
+
+<h3>Post-Matric Scholarship</h3>
+
+<p class="details">
+{% if session.get('language') == 'mr' %}
+SC / ST / OBC विद्यार्थ्यांसाठी 10 वी नंतर शिक्षणासाठी आर्थिक मदत.
+{% else %}
+Financial assistance for SC/ST/OBC students pursuing education after 10th.
+{% endif %}
+</p>
+
+<span class="tag">MahaDBT</span>
+
+<p>
+<a href="https://mahadbt.maharashtra.gov.in" target="_blank">Official Details</a>
+</p>
+
+</div>
+
+<div class="scheme-card">
+
+<h3>Eklavya Scholarship</h3>
+
+<p class="details">
+{% if session.get('language') == 'mr' %}
+पदव्युत्तर विद्यार्थ्यांसाठी आर्थिक मदत.
+{% else %}
+Financial aid for post-graduate students in Maharashtra.
+{% endif %}
+</p>
+
+<span class="tag">₹5000</span>
+
+<p>
+<a href="https://mahadbt.maharashtra.gov.in" target="_blank">Official Details</a>
+</p>
+
+</div>
+
+</div>
+
+</main>
+
+<footer>
+
+<p>
+© 2024 Maha 25 Scholar Path |
+<a href="https://mahadbt.maharashtra.gov.in">Official Website</a>
+</p>
+
+</footer>
+
+<script>
+function changeLanguage(lang){
+window.location.href="/set_language/"+lang;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maha 25 ScholarScheme - Applicable Schemes</title>
+
+<style>
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; color: #333; margin: 0; padding: 20px; }
+.container { max-width: 900px; margin: auto; }
+h1 { text-align: center; color: #0056b3; margin-bottom: 30px; }
+
+/* Card Layout */
+.scheme-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-left: 6px solid #007bff;
+    transition: 0.3s;
+}
+.scheme-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+.scheme-name { font-size: 1.5rem; font-weight: bold; color: #222; margin: 0 0 10px 0; }
+.docs-list { background: #f1f1f1; padding: 10px 15px; border-radius: 5px; margin: 15px 0; font-size: 0.95rem; }
+.docs-list strong { display: block; margin-bottom: 5px; color: #555; }
+/* Button */
+.apply-btn { display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 10px; }
+.apply-btn:hover { background-color: #0056b3; }
+/* Empty State */
+.no-scheme { text-align: center; padding: 50px; background: #fff; border: 2px dashed #ccc; border-radius: 8px; color: #777; }
+.error { color: red; font-weight: bold; font-size: 22px; background-color: #ffe6e6; padding: 12px; border-left: 6px solid red; margin-bottom: 20px; }
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>
+{% if session.get('language') == 'mr' %}
+तुमच्यासाठी उपलब्ध शिष्यवृत्ती
+{% else %}
+Your Eligible Schemes
+{% endif %}
+</h1>
+
+{% if message %}
+<p class="error">{{ message }}</p>
+{% endif %}
+
+{% if schemes %}
+  {% for scheme, days_left, status in schemes %}
+        <div class="scheme-card">
+            <h2 class="scheme-name">{{ scheme[1] }}</h2>
+            {% if notify and days_left and days_left <= 5 %}
+            <p style="color:red;font-weight:bold;">
+
+            {% if session.get('language') == 'mr' %}
+            ⏳ अंतिम तारीख {{ days_left }} दिवसात
+            {% else %}
+            ⏳ Deadline in {{ days_left }} days
+            {% endif %}
+
+            </p>
+            {% endif %}
+
+            <p>
+                <strong>{% if session.get('language') == 'mr' %}लागू प्रवर्ग:{% else %}Applicable Caste:{% endif %}</strong>
+                {{ scheme[3] }}
+            </p>
+
+            <p>
+                <strong>{% if session.get('language') == 'mr' %}आवश्यक शिक्षण:{% else %}Education Required:{% endif %}</strong>
+                {{ scheme[5] }}
+            </p>
+
+            <p>
+                <strong>{% if session.get('language') == 'mr' %}उत्पन्न मर्यादा:{% else %}Income Limit:{% endif %}</strong>
+                ₹{{ scheme[4] }}
+            </p>
+
+            <p>
+                <strong>{% if session.get('language') == 'mr' %}अर्जाची शेवटची तारीख:{% else %}Last Date to Apply:{% endif %}</strong>
+                {{ scheme[8] }}
+            </p>
+
+            <div class="docs-list">
+                <strong>{% if session.get('language') == 'mr' %}आवश्यक कागदपत्रे:{% else %}Required Documents:{% endif %}</strong>
+                {{ scheme[6] }}
+            </div>
+            
+            {# Status logic #}
+
+            {% if status == "closed" %}
+            <p class="error">
+            {% if session.get('language') == 'mr' %}
+            अर्जाची मुदत संपली
+            {% else %}
+            Applications Closed
+            {% endif %}
+            </p>
+
+            {% elif scheme[7] %}
+            <a href="{{ scheme[7] }}" target="_blank" class="apply-btn">
+            {% if session.get('language') == 'mr' %}
+            अर्ज करा →
+            {% else %}
+            Apply Now →
+            {% endif %}
+            </a>
+
+            {% else %}
+            <p class="error">
+            {% if session.get('language') == 'mr' %}
+            सध्या अर्ज लिंक उपलब्ध नाही.
+            {% else %}
+            Application link currently unavailable.
+            {% endif %}
+            </p>
+            {% endif %}
+            
+            <p style="font-size:14px;color:#666;margin-top:8px;">
+                {% if session.get('language') == 'mr' %}
+                टीप: अर्ज प्रक्रिया सरकारी पोर्टलवर होते. सर्व्हर तात्पुरता उपलब्ध नसू शकतो.
+                {% else %}
+                Note: Application is processed on the official government portal. The server may sometimes be temporarily unavailable.
+                {% endif %}
+            </p>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="no-scheme">
+        <h3>{% if session.get('language') == 'mr' %}कोणतीही योजना उपलब्ध नाही{% else %}No Scheme Applicable{% endif %}</h3>
+    </div>
+{% endif %}
+
+</div>
+</body>
+</html>
+

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maha 25 ScholarScheme - About</title>
+
+<style>
+
+body{
+font-family:'Arial',sans-serif;
+margin:0;
+background-color:#f4f7f9;
+}
+
+header{
+background-color:#2c3e50;
+color:white;
+padding:20px;
+text-align:center;
+}
+
+nav a{
+color:white;
+margin:0 15px;
+text-decoration:none;
+font-weight:bold;
+}
+
+nav a:hover{
+text-decoration:underline;
+}
+
+.content{
+background-color:white;
+color:black;
+margin:30px;
+padding:20px;
+}
+
+footer{
+background:#2c3e50;
+color:white;
+text-align:center;
+padding:20px;
+margin-top:40px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>
+{% if session.get('language') == 'mr' %}
+महा 25 स्कॉलर योजना
+{% else %}
+Maha 25 Scholar Path
+{% endif %}
+</h1>
+
+<nav>
+
+<a href="/">
+{% if session.get('language') == 'mr' %}
+मुख्यपृष्ठ
+{% else %}
+Home
+{% endif %}
+</a>
+
+<a href="/about">
+{% if session.get('language') == 'mr' %}
+माहिती
+{% else %}
+About
+{% endif %}
+</a>
+
+<a href="/contact">
+{% if session.get('language') == 'mr' %}
+संपर्क
+{% else %}
+Contact
+{% endif %}
+</a>
+
+<a href="/information">
+{% if session.get('language') == 'mr' %}
+योजना शोधा
+{% else %}
+Information
+{% endif %}
+</a>
+
+<select onchange="changeLanguage(this.value)">
+<option value="en" {% if session.get('language') == 'en' %}selected{% endif %}>English</option>
+<option value="mr" {% if session.get('language') == 'mr' %}selected{% endif %}>मराठी</option>
+</select>
+
+</nav>
+
+</header>
+
+<main>
+
+<div class="content">
+
+<h2>
+{% if session.get('language') == 'mr' %}
+आमच्याबद्दल
+{% else %}
+About Us
+{% endif %}
+</h2>
+
+<p>
+{% if session.get('language') == 'mr' %}
+ही वेबसाइट "महा 25 स्कॉलर पाथ" विद्या प्रतिष्ठानच्या कमलनयन बजाज अभियांत्रिकी व तंत्रज्ञान संस्थेच्या विद्यार्थ्यांनी डिझाइन व विकसित केली आहे.
+{% else %}
+This website Maha 25 Scholar Path is designed, developed and hosted by the students of Vidya Prathishthan's Kamalnayan Bajaj Institute of Engineering and Technology, Baramati.
+{% endif %}
+</p>
+
+<h3>
+{% if session.get('language') == 'mr' %}
+इतिहास
+{% else %}
+History
+{% endif %}
+</h3>
+
+<p>
+{% if session.get('language') == 'mr' %}
+हा पोर्टल राष्ट्रीय ई-गव्हर्नन्स योजनेअंतर्गत विकसित करण्यात आला असून एप्रिल 2026 मध्ये सुरू करण्यात आला.
+{% else %}
+The portal has been developed as a project under the National E-Governance Plan of the Government. The portal was launched in April 2026.
+{% endif %}
+</p>
+
+<h3>
+{% if session.get('language') == 'mr' %}
+उद्दिष्ट / दृष्टी
+{% else %}
+Objective / Vision
+{% endif %}
+</h3>
+
+<p>
+{% if session.get('language') == 'mr' %}
+या वेब-आधारित प्रणालीचे मुख्य उद्दिष्ट विद्यार्थ्यांच्या प्रोफाइलनुसार योग्य शिष्यवृत्ती योजना शोधून देणे आहे. प्रणाली विद्यार्थ्यांच्या टक्केवारी, जात, कौटुंबिक उत्पन्न आणि वय यावर आधारित योग्य योजना फिल्टर करते.
+{% else %}
+The primary objective of this web-based application is to bridge the information gap by providing a personalized interface that identifies eligible scholarship schemes based on a student’s profile including percentage, category, income and age.
+{% endif %}
+</p>
+
+<h3>
+{% if session.get('language') == 'mr' %}
+परिणाम
+{% else %}
+Outcome
+{% endif %}
+</h3>
+
+<p>
+{% if session.get('language') == 'mr' %}
+या प्लॅटफॉर्मचे उद्दिष्ट वापरकर्त्यांसाठी शिष्यवृत्ती शोधणे सोपे करणे आहे. वापरकर्त्याच्या माहितीच्या आधारे प्रणाली योग्य योजना सुचवते.
+{% else %}
+The core philosophy of this platform is to simplify the user journey. Instead of the user searching for scholarships, the scholarships find the user based on their profile.
+{% endif %}
+</p>
+
+<h3>
+{% if session.get('language') == 'mr' %}
+डेटा संकलन
+{% else %}
+Data Acquisition and Aggregation
+{% endif %}
+</h3>
+
+<p>
+{% if session.get('language') == 'mr' %}
+शिष्यवृत्तीची माहिती MahaDBT, National Scholarship Portal आणि इतर स्रोतांमधून गोळा केली जाते आणि त्यावर आधारित प्रणाली योजना फिल्टर करते.
+{% else %}
+Scholarship data is collected from MahaDBT, the National Scholarship Portal (NSP), and other verified sources and then processed to filter schemes based on eligibility conditions.
+{% endif %}
+</p>
+
+</div>
+
+</main>
+
+<footer>
+
+<p>
+© 2024 Maha 25 Scholar Path |
+<a href="https://mahadbt.maharashtra.gov.in/" style="color:#ffcc00;">MahaDBT Official Portal</a>
+</p>
+
+</footer>
+
+<script>
+
+function changeLanguage(lang){
+window.location.href="/set_language/"+lang;
+}
+
+</script>
+
+</body>
+</html>

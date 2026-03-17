@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Edit Scheme</title>
+</head>
+
+<body>
+
+<h2>Edit Scheme</h2>
+
+<form action="/update_scheme" method="POST">
+
+<!-- Hidden ID -->
+<input type="hidden" name="id" value="{{ scheme[0] }}">
+
+<label>Scheme Name</label>
+<input type="text" name="name" value="{{ scheme[1] }}" required>
+
+<label>Gender</label>
+<input type="text" name="gender" value="{{ scheme[2] }}" required>
+
+<label>Caste</label>
+<input type="text" name="caste" value="{{ scheme[3] }}" required>
+
+<label>Income Limit</label>
+<input type="number" name="income" value="{{ scheme[4] }}" required>
+
+<label>Education</label>
+<input type="text" name="education" value="{{ scheme[5] }}" required>
+
+<button type="submit">Update Scheme</button>
+
+</form>
+
+</body>
+</html>

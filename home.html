@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maha 25 ScholarScheme - Login/Register</title>
+
+<style>
+
+body{
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+background-color:#f4f7f6;
+display:flex;
+flex-direction:column;
+align-items:center;
+padding:50px 20px;
+}
+
+.site-header{
+margin-bottom:30px;
+text-align:center;
+color:#2c3e50;
+}
+
+.form-container{
+background:#fff;
+padding:30px;
+border-radius:8px;
+box-shadow:0 4px 15px rgba(0,0,0,0.1);
+width:100%;
+max-width:400px;
+}
+
+.toggle-btns{
+display:flex;
+justify-content:space-around;
+margin-bottom:25px;
+border-bottom:2px solid #eee;
+}
+
+.toggle-btns button{
+border:none;
+background:none;
+padding:10px;
+cursor:pointer;
+font-weight:bold;
+color:#777;
+transition:0.3s;
+}
+
+.toggle-btns button.active{
+color:#04AA6D;
+border-bottom:2px solid #04AA6D;
+}
+
+.form-content{display:none;}
+.form-content.active{display:block;}
+
+input{
+width:100%;
+padding:12px;
+margin:8px 0 20px;
+border:1px solid #ccc;
+border-radius:4px;
+box-sizing:border-box;
+}
+
+.submit-btn{
+background-color:#04AA6D;
+color:white;
+padding:14px;
+border:none;
+border-radius:4px;
+width:100%;
+cursor:pointer;
+font-size:16px;
+}
+
+.verify-box{
+display:flex;
+gap:10px;
+}
+
+.btn-verify{
+background:#28a745;
+color:white;
+border:none;
+padding:10px;
+border-radius:5px;
+cursor:pointer;
+white-space:nowrap;
+}
+
+.btn-main{
+width:100%;
+padding:12px;
+background:#06c60d;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-size:16px;
+margin-top:15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="site-header">
+
+<h1>
+{% if session.get('language') == 'mr' %}
+महा 25 स्कॉलर योजना
+{% else %}
+Maha 25 ScholarScheme
+{% endif %}
+</h1>
+
+<p>
+{% if session.get('language') == 'mr' %}
+शैक्षणिक प्रगतीसाठी तुमचा मार्ग
+{% else %}
+Your Gateway to Academic Excellence
+{% endif %}
+</p>
+
+</div>
+
+<div style="margin-bottom:20px;">
+
+<a href="/">
+{% if session.get('language') == 'mr' %}
+मुख्यपृष्ठ
+{% else %}
+Home
+{% endif %}
+</a> |
+
+<a href="/about">
+{% if session.get('language') == 'mr' %}
+माहिती
+{% else %}
+About
+{% endif %}
+</a> |
+
+<a href="/contact">
+{% if session.get('language') == 'mr' %}
+संपर्क
+{% else %}
+Contact
+{% endif %}
+</a>
+
+<select onchange="changeLanguage(this.value)">
+<option value="en" {% if session.get('language') == 'en' %}selected{% endif %}>English</option>
+<option value="mr" {% if session.get('language') == 'mr' %}selected{% endif %}>मराठी</option>
+</select>
+
+</div>
+
+<div class="form-container">
+
+<div class="toggle-btns">
+
+<button id="loginTab" class="active" onclick="toggleForm('login')">
+{% if session.get('language') == 'mr' %}
+लॉगिन
+{% else %}
+Login
+{% endif %}
+</button>
+
+<button id="registerTab" onclick="toggleForm('register')">
+{% if session.get('language') == 'mr' %}
+नोंदणी
+{% else %}
+Register
+{% endif %}
+</button>
+
+</div>
+
+<div id="loginForm" class="form-content active">
+
+<form action="/login" method="POST">
+
+<label>
+{% if session.get('language') == 'mr' %}
+ईमेल पत्ता
+{% else %}
+Email Address
+{% endif %}
+</label>
+
+<input type="email" name="email" placeholder="Enter your email" required>
+
+<label>
+{% if session.get('language') == 'mr' %}
+पासवर्ड
+{% else %}
+Password
+{% endif %}
+</label>
+
+<input type="password" name="password" placeholder="Enter password" required>
+
+<button type="submit" class="submit-btn">
+{% if session.get('language') == 'mr' %}
+लॉगिन
+{% else %}
+Login
+{% endif %}
+</button>
+
+</form>
+
+</div>
+
+<div id="registerForm" class="form-content">
+
+<form action="/register" method="POST">
+
+<label>
+{% if session.get('language') == 'mr' %}
+पूर्ण नाव
+{% else %}
+Full Name
+{% endif %}
+</label>
+
+<input type="text" name="name" placeholder="Enter full name" required>
+
+<label>Email</label>
+
+<div class="verify-box">
+
+<input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+<button type="button" class="btn-verify" onclick="sendOTP()">
+Send OTP
+</button>
+
+</div>
+
+<label>
+{% if session.get('language') == 'mr' %}
+ओटीपी
+{% else %}
+Enter OTP
+{% endif %}
+</label>
+
+<input type="text" name="otp">
+
+<label>
+{% if session.get('language') == 'mr' %}
+पासवर्ड सेट करा
+{% else %}
+Set Password
+{% endif %}
+</label>
+
+<input type="password" name="password" required>
+
+<button type="submit" class="btn-main">
+{% if session.get('language') == 'mr' %}
+नोंदणी करा
+{% else %}
+Create Account
+{% endif %}
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+<script>
+
+function toggleForm(type){
+
+document.querySelectorAll('.form-content').forEach(f=>f.classList.remove('active'));
+document.querySelectorAll('.toggle-btns button').forEach(b=>b.classList.remove('active'));
+
+if(type==="login"){
+document.getElementById("loginForm").classList.add("active");
+document.getElementById("loginTab").classList.add("active");
+}
+else{
+document.getElementById("registerForm").classList.add("active");
+document.getElementById("registerTab").classList.add("active");
+}
+
+}
+
+function changeLanguage(lang){
+window.location.href="/set_language/"+lang;
+}
+
+function sendOTP(){
+
+let email=document.getElementById("email").value;
+
+if(email==""){
+alert("Please enter email first");
+return;
+}
+
+fetch("/send_otp",{
+method:"POST",
+headers:{"Content-Type":"application/x-www-form-urlencoded"},
+body:"email="+encodeURIComponent(email)
+})
+.then(response=>response.text())
+.then(data=>{
+alert("OTP sent to your email!");
+})
+.catch(error=>{
+alert("Error sending OTP");
+});
+
+}
+
+</script>
+
+</body>
+</html>

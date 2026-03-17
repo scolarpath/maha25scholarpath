@@ -1,0 +1,227 @@
+2026-03-15 22:09:31,403 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-15 22:09:31,405 - INFO - Added job "send_reminders" to job store "default"
+2026-03-15 22:09:31,405 - INFO - Scheduler started
+2026-03-15 22:09:31,420 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-03-15 22:09:31,420 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-15 22:09:31,421 - INFO -  * Restarting with stat
+2026-03-15 22:09:31,814 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-15 22:09:31,815 - INFO - Added job "send_reminders" to job store "default"
+2026-03-15 22:09:31,815 - INFO - Scheduler started
+2026-03-15 22:09:31,825 - WARNING -  * Debugger is active!
+2026-03-15 22:09:31,826 - INFO -  * Debugger PIN: 716-736-727
+2026-03-15 22:10:34,351 - INFO - 127.0.0.1 - - [15/Mar/2026 22:10:34] "GET /information HTTP/1.1" 200 -
+2026-03-15 22:10:50,171 - INFO - 127.0.0.1 - - [15/Mar/2026 22:10:50] "POST /search HTTP/1.1" 200 -
+2026-03-15 22:11:51,115 - INFO - Email sent to srushti.kolawale.comp.2024@vpkbiet.org for deadlines: ['Scheme A', 'Scheme B']
+2026-03-15 22:11:51,116 - INFO - 127.0.0.1 - - [15/Mar/2026 22:11:51] "GET /send_reminders HTTP/1.1" 200 -
+2026-03-15 22:11:51,186 - INFO - 127.0.0.1 - - [15/Mar/2026 22:11:51] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-15 22:26:48,754 - INFO -  * Detected change in 'C:\\Users\\srush\\OneDrive\\Documents\\Desktop\\cep project\\app.py', reloading
+2026-03-15 22:26:48,857 - INFO -  * Restarting with stat
+2026-03-15 22:26:49,620 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-15 22:26:49,621 - INFO - Added job "send_reminders" to job store "default"
+2026-03-15 22:26:49,621 - INFO - Scheduler started
+2026-03-15 22:26:49,642 - WARNING -  * Debugger is active!
+2026-03-15 22:26:49,645 - INFO -  * Debugger PIN: 716-736-727
+2026-03-15 22:48:05,795 - INFO -  * Detected change in 'C:\\Users\\srush\\OneDrive\\Documents\\Desktop\\cep project\\app.py', reloading
+2026-03-15 22:48:05,898 - INFO -  * Restarting with stat
+2026-03-15 22:48:06,479 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-15 22:48:06,480 - INFO - Added job "send_reminders" to job store "default"
+2026-03-15 22:48:06,480 - INFO - Scheduler started
+2026-03-15 22:48:06,496 - WARNING -  * Debugger is active!
+2026-03-15 22:48:06,499 - INFO -  * Debugger PIN: 716-736-727
+2026-03-15 22:48:23,642 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-15 22:48:23,643 - INFO - Added job "send_reminders" to job store "default"
+2026-03-15 22:48:23,643 - INFO - Scheduler started
+2026-03-15 22:48:23,671 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-03-15 22:48:23,672 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-15 22:48:23,674 - INFO -  * Restarting with stat
+2026-03-15 22:48:24,203 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-15 22:48:24,204 - INFO - Added job "send_reminders" to job store "default"
+2026-03-15 22:48:24,204 - INFO - Scheduler started
+2026-03-15 22:48:24,217 - WARNING -  * Debugger is active!
+2026-03-15 22:48:24,219 - INFO -  * Debugger PIN: 716-736-727
+2026-03-15 22:48:43,045 - INFO - 127.0.0.1 - - [15/Mar/2026 22:48:43] "GET /home HTTP/1.1" 200 -
+2026-03-15 22:48:44,668 - INFO - 127.0.0.1 - - [15/Mar/2026 22:48:44] "GET /home HTTP/1.1" 200 -
+2026-03-15 22:48:46,288 - INFO - 127.0.0.1 - - [15/Mar/2026 22:48:46] "GET / HTTP/1.1" 200 -
+2026-03-15 22:48:47,488 - INFO - 127.0.0.1 - - [15/Mar/2026 22:48:47] "GET / HTTP/1.1" 200 -
+2026-03-15 22:48:48,364 - INFO - 127.0.0.1 - - [15/Mar/2026 22:48:48] "GET / HTTP/1.1" 200 -
+2026-03-15 22:48:49,936 - INFO - 127.0.0.1 - - [15/Mar/2026 22:48:49] "GET /home HTTP/1.1" 200 -
+2026-03-15 22:49:43,453 - INFO - 127.0.0.1 - - [15/Mar/2026 22:49:43] "POST /send_otp HTTP/1.1" 200 -
+2026-03-15 22:50:25,192 - INFO - 127.0.0.1 - - [15/Mar/2026 22:50:25] "POST /send_otp HTTP/1.1" 200 -
+2026-03-15 22:51:11,608 - INFO - 127.0.0.1 - - [15/Mar/2026 22:51:11] "[32mPOST /register HTTP/1.1[0m" 302 -
+2026-03-15 22:51:11,618 - INFO - 127.0.0.1 - - [15/Mar/2026 22:51:11] "GET /home HTTP/1.1" 200 -
+2026-03-15 22:51:22,823 - INFO - 127.0.0.1 - - [15/Mar/2026 22:51:22] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-15 22:51:22,865 - INFO - 127.0.0.1 - - [15/Mar/2026 22:51:22] "GET /information HTTP/1.1" 200 -
+2026-03-15 22:51:44,392 - INFO - 127.0.0.1 - - [15/Mar/2026 22:51:44] "POST /search HTTP/1.1" 200 -
+2026-03-15 22:52:55,167 - INFO - 127.0.0.1 - - [15/Mar/2026 22:52:55] "[35m[1mGET /send_reminders HTTP/1.1[0m" 500 -
+2026-03-15 22:52:55,299 - INFO - 127.0.0.1 - - [15/Mar/2026 22:52:55] "GET /send_reminders?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2026-03-15 22:52:55,302 - INFO - 127.0.0.1 - - [15/Mar/2026 22:52:55] "GET /send_reminders?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2026-03-15 22:52:55,353 - INFO - 127.0.0.1 - - [15/Mar/2026 22:52:55] "GET /send_reminders?__debugger__=yes&cmd=resource&f=console.png&s=sQuWUJ4CY4X3kvoCwQxh HTTP/1.1" 200 -
+2026-03-15 22:52:55,370 - INFO - 127.0.0.1 - - [15/Mar/2026 22:52:55] "GET /send_reminders?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2026-03-15 22:53:44,762 - INFO - 127.0.0.1 - - [15/Mar/2026 22:53:44] "[35m[1mGET /send_reminders HTTP/1.1[0m" 500 -
+2026-03-15 22:53:44,799 - INFO - 127.0.0.1 - - [15/Mar/2026 22:53:44] "GET /send_reminders?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2026-03-15 22:53:44,802 - INFO - 127.0.0.1 - - [15/Mar/2026 22:53:44] "GET /send_reminders?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2026-03-15 22:53:44,858 - INFO - 127.0.0.1 - - [15/Mar/2026 22:53:44] "GET /send_reminders?__debugger__=yes&cmd=resource&f=console.png&s=sQuWUJ4CY4X3kvoCwQxh HTTP/1.1" 200 -
+2026-03-15 22:53:44,871 - INFO - 127.0.0.1 - - [15/Mar/2026 22:53:44] "GET /send_reminders?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2026-03-15 22:59:15,132 - INFO -  * Detected change in 'C:\\Users\\srush\\OneDrive\\Documents\\Desktop\\cep project\\app.py', reloading
+2026-03-15 22:59:15,209 - INFO -  * Restarting with stat
+2026-03-15 22:59:15,788 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-15 22:59:15,789 - INFO - Added job "send_reminders" to job store "default"
+2026-03-15 22:59:15,789 - INFO - Scheduler started
+2026-03-15 22:59:15,806 - WARNING -  * Debugger is active!
+2026-03-15 22:59:15,809 - INFO -  * Debugger PIN: 716-736-727
+2026-03-15 22:59:37,955 - INFO - 127.0.0.1 - - [15/Mar/2026 22:59:37] "[35m[1mGET /send_reminders HTTP/1.1[0m" 500 -
+2026-03-15 22:59:38,087 - INFO - 127.0.0.1 - - [15/Mar/2026 22:59:38] "[36mGET /send_reminders?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2026-03-15 22:59:38,088 - INFO - 127.0.0.1 - - [15/Mar/2026 22:59:38] "[36mGET /send_reminders?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2026-03-15 22:59:38,131 - INFO - 127.0.0.1 - - [15/Mar/2026 22:59:38] "GET /send_reminders?__debugger__=yes&cmd=resource&f=console.png&s=uWXSkCRGNrR0RooJaQA9 HTTP/1.1" 200 -
+2026-03-15 23:01:23,489 - INFO - 127.0.0.1 - - [15/Mar/2026 23:01:23] "[35m[1mGET /send_reminders HTTP/1.1[0m" 500 -
+2026-03-15 23:01:23,541 - INFO - 127.0.0.1 - - [15/Mar/2026 23:01:23] "[36mGET /send_reminders?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2026-03-15 23:01:23,546 - INFO - 127.0.0.1 - - [15/Mar/2026 23:01:23] "[36mGET /send_reminders?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2026-03-15 23:01:23,575 - INFO - 127.0.0.1 - - [15/Mar/2026 23:01:23] "GET /send_reminders?__debugger__=yes&cmd=resource&f=console.png&s=uWXSkCRGNrR0RooJaQA9 HTTP/1.1" 200 -
+2026-03-15 23:01:23,598 - INFO - 127.0.0.1 - - [15/Mar/2026 23:01:23] "[36mGET /send_reminders?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2026-03-15 23:01:25,153 - INFO - 127.0.0.1 - - [15/Mar/2026 23:01:25] "[35m[1mGET /send_reminders HTTP/1.1[0m" 500 -
+2026-03-15 23:01:25,198 - INFO - 127.0.0.1 - - [15/Mar/2026 23:01:25] "[36mGET /send_reminders?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2026-03-15 23:01:25,205 - INFO - 127.0.0.1 - - [15/Mar/2026 23:01:25] "[36mGET /send_reminders?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2026-03-15 23:01:25,229 - INFO - 127.0.0.1 - - [15/Mar/2026 23:01:25] "[36mGET /send_reminders?__debugger__=yes&cmd=resource&f=console.png&s=uWXSkCRGNrR0RooJaQA9 HTTP/1.1[0m" 304 -
+2026-03-15 23:01:25,252 - INFO - 127.0.0.1 - - [15/Mar/2026 23:01:25] "[36mGET /send_reminders?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2026-03-15 23:05:02,446 - INFO -  * Detected change in 'C:\\Users\\srush\\OneDrive\\Documents\\Desktop\\cep project\\app.py', reloading
+2026-03-15 23:05:02,516 - INFO -  * Restarting with stat
+2026-03-15 23:05:03,036 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-15 23:05:03,037 - INFO - Added job "send_reminders" to job store "default"
+2026-03-15 23:05:03,037 - INFO - Scheduler started
+2026-03-15 23:05:03,054 - WARNING -  * Debugger is active!
+2026-03-15 23:05:03,056 - INFO -  * Debugger PIN: 716-736-727
+2026-03-15 23:05:08,671 - INFO - 127.0.0.1 - - [15/Mar/2026 23:05:08] "[35m[1mGET /send_reminders HTTP/1.1[0m" 500 -
+2026-03-15 23:05:08,826 - INFO - 127.0.0.1 - - [15/Mar/2026 23:05:08] "[36mGET /send_reminders?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2026-03-15 23:05:08,829 - INFO - 127.0.0.1 - - [15/Mar/2026 23:05:08] "[36mGET /send_reminders?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2026-03-15 23:05:08,844 - INFO - 127.0.0.1 - - [15/Mar/2026 23:05:08] "GET /send_reminders?__debugger__=yes&cmd=resource&f=console.png&s=hcsSJQV6WR2DRTA20qRd HTTP/1.1" 200 -
+2026-03-15 23:05:08,853 - INFO - 127.0.0.1 - - [15/Mar/2026 23:05:08] "[36mGET /send_reminders?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2026-03-15 23:05:36,369 - INFO -  * Detected change in 'C:\\Users\\srush\\OneDrive\\Documents\\Desktop\\cep project\\app.py', reloading
+2026-03-15 23:05:36,442 - INFO -  * Restarting with stat
+2026-03-15 23:05:36,941 - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-15 23:05:36,942 - INFO - Added job "send_reminders" to job store "default"
+2026-03-15 23:05:36,942 - INFO - Scheduler started
+2026-03-15 23:05:36,957 - WARNING -  * Debugger is active!
+2026-03-15 23:05:36,959 - INFO -  * Debugger PIN: 716-736-727
+2026-03-15 23:06:52,841 - INFO - 127.0.0.1 - - [15/Mar/2026 23:06:52] "GET /send_reminders HTTP/1.1" 200 -
+2026-03-15 23:12:09,968 - INFO - 127.0.0.1 - - [15/Mar/2026 23:12:09] "GET /home HTTP/1.1" 200 -
+2026-03-15 23:12:12,020 - INFO - 127.0.0.1 - - [15/Mar/2026 23:12:12] "GET /home HTTP/1.1" 200 -
+2026-03-15 23:12:19,825 - INFO - 127.0.0.1 - - [15/Mar/2026 23:12:19] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-15 23:12:19,853 - INFO - 127.0.0.1 - - [15/Mar/2026 23:12:19] "GET /information HTTP/1.1" 200 -
+2026-03-15 23:14:02,455 - INFO - 127.0.0.1 - - [15/Mar/2026 23:14:02] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-15 23:14:02,460 - INFO - 127.0.0.1 - - [15/Mar/2026 23:14:02] "GET /information HTTP/1.1" 200 -
+2026-03-15 23:14:33,682 - INFO - 127.0.0.1 - - [15/Mar/2026 23:14:33] "POST /search HTTP/1.1" 200 -
+2026-03-15 23:17:18,214 - INFO - 127.0.0.1 - - [15/Mar/2026 23:17:18] "GET / HTTP/1.1" 200 -
+2026-03-15 23:17:23,475 - INFO - 127.0.0.1 - - [15/Mar/2026 23:17:23] "GET /about HTTP/1.1" 200 -
+2026-03-15 23:17:32,171 - INFO - 127.0.0.1 - - [15/Mar/2026 23:17:32] "GET / HTTP/1.1" 200 -
+2026-03-15 23:17:47,770 - INFO - 127.0.0.1 - - [15/Mar/2026 23:17:47] "GET /about HTTP/1.1" 200 -
+2026-03-15 23:17:50,359 - INFO - 127.0.0.1 - - [15/Mar/2026 23:17:50] "GET /contact HTTP/1.1" 200 -
+2026-03-15 23:17:54,025 - INFO - 127.0.0.1 - - [15/Mar/2026 23:17:54] "GET /information HTTP/1.1" 200 -
+2026-03-15 23:17:57,407 - INFO - 127.0.0.1 - - [15/Mar/2026 23:17:57] "GET / HTTP/1.1" 200 -
+2026-03-15 23:18:03,285 - INFO - 127.0.0.1 - - [15/Mar/2026 23:18:03] "GET /home HTTP/1.1" 200 -
+2026-03-15 23:18:18,703 - INFO - 127.0.0.1 - - [15/Mar/2026 23:18:18] "[32mGET /set_language/mr HTTP/1.1[0m" 302 -
+2026-03-15 23:18:18,708 - INFO - 127.0.0.1 - - [15/Mar/2026 23:18:18] "GET /home HTTP/1.1" 200 -
+2026-03-15 23:19:18,444 - INFO - 127.0.0.1 - - [15/Mar/2026 23:19:18] "GET /information HTTP/1.1" 200 -
+2026-03-15 23:19:31,947 - INFO - 127.0.0.1 - - [15/Mar/2026 23:19:31] "POST /search HTTP/1.1" 200 -
+2026-03-15 23:21:32,594 - INFO - 127.0.0.1 - - [15/Mar/2026 23:21:32] "GET /send_reminders HTTP/1.1" 200 -
+2026-03-15 23:40:53,354 - INFO -  * Detected change in 'C:\\Users\\srush\\OneDrive\\Documents\\Desktop\\cep project\\app.py', reloading
+2026-03-15 23:40:53,396 - INFO -  * Restarting with stat
+2026-03-15 23:48:53,361 - INFO -  * Restarting with stat
+2026-03-15 23:51:20,762 - INFO -  * Restarting with stat
+2026-03-15 23:51:21,074 - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-15 23:51:21,074 - Added job "send_reminders" to job store "default"
+2026-03-15 23:51:21,074 - Scheduler started
+2026-03-15 23:51:21,082 -  * Debugger is active!
+2026-03-15 23:51:21,083 -  * Debugger PIN: 716-736-727
+2026-03-15 23:51:26,539 - 127.0.0.1 - - [15/Mar/2026 23:51:26] "GET /information HTTP/1.1" 200 -
+2026-03-15 23:51:43,665 - 127.0.0.1 - - [15/Mar/2026 23:51:43] "POST /search HTTP/1.1" 200 -
+2026-03-15 23:57:48,908 -  * Detected change in 'C:\\Users\\srush\\OneDrive\\Documents\\Desktop\\cep project\\app.py', reloading
+2026-03-15 23:57:48,956 - INFO -  * Restarting with stat
+2026-03-16 00:01:57,793 - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-16 00:01:57,793 - Added job "send_reminders" to job store "default"
+2026-03-16 00:01:57,793 - Scheduler started
+2026-03-16 00:01:57,803 - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-03-16 00:01:57,803 - [33mPress CTRL+C to quit[0m
+2026-03-16 00:01:57,804 -  * Restarting with stat
+2026-03-16 00:01:58,044 - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-16 00:01:58,045 - Added job "send_reminders" to job store "default"
+2026-03-16 00:01:58,045 - Scheduler started
+2026-03-16 00:01:58,051 -  * Debugger is active!
+2026-03-16 00:01:58,052 -  * Debugger PIN: 716-736-727
+2026-03-16 00:02:48,754 - 127.0.0.1 - - [16/Mar/2026 00:02:48] "GET /home HTTP/1.1" 200 -
+2026-03-16 00:02:56,243 - 127.0.0.1 - - [16/Mar/2026 00:02:56] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-16 00:02:56,257 - 127.0.0.1 - - [16/Mar/2026 00:02:56] "GET /information HTTP/1.1" 200 -
+2026-03-16 00:03:07,591 - 127.0.0.1 - - [16/Mar/2026 00:03:07] "POST /search HTTP/1.1" 200 -
+2026-03-16 00:14:18,379 -  * Detected change in 'C:\\Users\\srush\\OneDrive\\Documents\\Desktop\\cep project\\app.py', reloading
+2026-03-16 00:14:18,420 -  * Restarting with stat
+2026-03-16 00:14:18,750 - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-16 00:14:18,751 - Added job "send_reminders" to job store "default"
+2026-03-16 00:14:18,751 - Scheduler started
+2026-03-16 00:14:18,760 -  * Debugger is active!
+2026-03-16 00:14:18,761 -  * Debugger PIN: 716-736-727
+2026-03-16 14:44:12,304 - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-16 14:44:12,305 - Added job "send_reminders" to job store "default"
+2026-03-16 14:44:12,305 - Scheduler started
+2026-03-16 14:44:12,329 - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-03-16 14:44:12,329 - [33mPress CTRL+C to quit[0m
+2026-03-16 14:44:12,330 -  * Restarting with stat
+2026-03-16 14:44:12,673 - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-16 14:44:12,674 - Added job "send_reminders" to job store "default"
+2026-03-16 14:44:12,674 - Scheduler started
+2026-03-16 14:44:12,683 -  * Debugger is active!
+2026-03-16 14:44:12,685 -  * Debugger PIN: 716-736-727
+2026-03-16 14:45:22,129 - 127.0.0.1 - - [16/Mar/2026 14:45:22] "GET / HTTP/1.1" 200 -
+2026-03-16 14:45:22,191 - 127.0.0.1 - - [16/Mar/2026 14:45:22] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-16 14:45:28,930 - 127.0.0.1 - - [16/Mar/2026 14:45:28] "GET /home HTTP/1.1" 200 -
+2026-03-16 14:45:44,064 - 127.0.0.1 - - [16/Mar/2026 14:45:44] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-16 14:45:44,111 - 127.0.0.1 - - [16/Mar/2026 14:45:44] "GET /information HTTP/1.1" 200 -
+2026-03-16 14:46:02,490 - 127.0.0.1 - - [16/Mar/2026 14:46:02] "POST /search HTTP/1.1" 200 -
+2026-03-16 14:46:45,149 - 127.0.0.1 - - [16/Mar/2026 14:46:45] "[32mGET /set_language/mr HTTP/1.1[0m" 302 -
+2026-03-16 14:46:45,157 - 127.0.0.1 - - [16/Mar/2026 14:46:45] "GET /information HTTP/1.1" 200 -
+2026-03-16 14:46:57,155 - 127.0.0.1 - - [16/Mar/2026 14:46:57] "POST /search HTTP/1.1" 200 -
+2026-03-16 14:47:27,614 - 127.0.0.1 - - [16/Mar/2026 14:47:27] "[32mGET /set_language/en HTTP/1.1[0m" 302 -
+2026-03-16 14:47:27,624 - 127.0.0.1 - - [16/Mar/2026 14:47:27] "GET /information HTTP/1.1" 200 -
+2026-03-16 14:49:02,688 - 127.0.0.1 - - [16/Mar/2026 14:49:02] "GET /home HTTP/1.1" 200 -
+2026-03-16 14:49:49,076 - 127.0.0.1 - - [16/Mar/2026 14:49:49] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-16 14:49:49,085 - 127.0.0.1 - - [16/Mar/2026 14:49:49] "GET /information HTTP/1.1" 200 -
+2026-03-16 14:49:56,141 - 127.0.0.1 - - [16/Mar/2026 14:49:56] "[32mGET /set_language/mr HTTP/1.1[0m" 302 -
+2026-03-16 14:49:56,150 - 127.0.0.1 - - [16/Mar/2026 14:49:56] "GET /information HTTP/1.1" 200 -
+2026-03-16 14:50:01,762 - 127.0.0.1 - - [16/Mar/2026 14:50:01] "[32mGET /set_language/en HTTP/1.1[0m" 302 -
+2026-03-16 14:50:01,772 - 127.0.0.1 - - [16/Mar/2026 14:50:01] "GET /information HTTP/1.1" 200 -
+2026-03-16 14:50:27,376 - 127.0.0.1 - - [16/Mar/2026 14:50:27] "POST /search HTTP/1.1" 200 -
+2026-03-16 15:02:04,449 - 127.0.0.1 - - [16/Mar/2026 15:02:04] "GET /admin HTTP/1.1" 200 -
+2026-03-16 15:02:04,499 - 127.0.0.1 - - [16/Mar/2026 15:02:04] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-16 15:02:34,923 - 127.0.0.1 - - [16/Mar/2026 15:02:34] "[32mPOST /admin HTTP/1.1[0m" 302 -
+2026-03-16 15:02:34,949 - 127.0.0.1 - - [16/Mar/2026 15:02:34] "GET /admin_dashboard HTTP/1.1" 200 -
+2026-03-16 15:03:28,843 - 127.0.0.1 - - [16/Mar/2026 15:03:28] "GET /edit_scheme/6 HTTP/1.1" 200 -
+2026-03-16 15:03:34,930 - 127.0.0.1 - - [16/Mar/2026 15:03:34] "[35m[1mPOST /update_scheme HTTP/1.1[0m" 500 -
+2026-03-16 15:03:35,095 - 127.0.0.1 - - [16/Mar/2026 15:03:35] "GET /update_scheme?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2026-03-16 15:03:35,096 - 127.0.0.1 - - [16/Mar/2026 15:03:35] "GET /update_scheme?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2026-03-16 15:03:35,156 - 127.0.0.1 - - [16/Mar/2026 15:03:35] "GET /update_scheme?__debugger__=yes&cmd=resource&f=console.png&s=68I6wEDme3GHK9mMBZyq HTTP/1.1" 200 -
+2026-03-16 15:03:35,170 - 127.0.0.1 - - [16/Mar/2026 15:03:35] "GET /update_scheme?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2026-03-16 16:39:50,528 - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-16 16:39:50,530 - Added job "send_reminders" to job store "default"
+2026-03-16 16:39:50,530 - Scheduler started
+2026-03-16 16:39:50,568 - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-03-16 16:39:50,568 - [33mPress CTRL+C to quit[0m
+2026-03-16 16:39:50,570 -  * Restarting with stat
+2026-03-16 16:39:51,133 - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-03-16 16:39:51,134 - Added job "send_reminders" to job store "default"
+2026-03-16 16:39:51,134 - Scheduler started
+2026-03-16 16:39:51,143 -  * Debugger is active!
+2026-03-16 16:39:51,144 -  * Debugger PIN: 716-736-727
+2026-03-16 16:40:13,374 - 127.0.0.1 - - [16/Mar/2026 16:40:13] "GET / HTTP/1.1" 200 -
+2026-03-16 16:40:13,471 - 127.0.0.1 - - [16/Mar/2026 16:40:13] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-16 16:40:21,276 - 127.0.0.1 - - [16/Mar/2026 16:40:21] "GET /home HTTP/1.1" 200 -
+2026-03-16 16:40:33,205 - 127.0.0.1 - - [16/Mar/2026 16:40:33] "POST /login HTTP/1.1" 200 -
+2026-03-16 16:40:47,464 - 127.0.0.1 - - [16/Mar/2026 16:40:47] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-16 16:40:47,507 - 127.0.0.1 - - [16/Mar/2026 16:40:47] "GET /information HTTP/1.1" 200 -
+2026-03-16 16:40:58,899 - 127.0.0.1 - - [16/Mar/2026 16:40:58] "[32mGET /set_language/mr HTTP/1.1[0m" 302 -
+2026-03-16 16:40:58,909 - 127.0.0.1 - - [16/Mar/2026 16:40:58] "GET /information HTTP/1.1" 200 -
+2026-03-16 16:41:28,746 - 127.0.0.1 - - [16/Mar/2026 16:41:28] "[32mGET /set_language/en HTTP/1.1[0m" 302 -
+2026-03-16 16:41:28,765 - 127.0.0.1 - - [16/Mar/2026 16:41:28] "GET /information HTTP/1.1" 200 -
+2026-03-16 16:41:44,789 - 127.0.0.1 - - [16/Mar/2026 16:41:44] "POST /search HTTP/1.1" 200 -

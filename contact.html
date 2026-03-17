@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Maha 25 ScholarScheme - Contact</title>
+
+<style>
+
+body{
+font-family:'Arial',sans-serif;
+margin:0;
+background-color:#f4f7f9;
+}
+
+header{
+background-color:#2c3e50;
+color:white;
+padding:20px;
+text-align:center;
+}
+
+nav a{
+color:white;
+margin:10px 20px;
+text-decoration:none;
+font-weight:bold;
+}
+
+nav a:hover{
+text-decoration:underline;
+}
+
+.con{
+background-color:white;
+color:black;
+margin:80px;
+padding:80px;
+}
+
+footer{
+background:#2c3e50;
+color:white;
+text-align:center;
+padding:20px;
+margin-top:40px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>
+{% if session.get('language') == 'mr' %}
+महा 25 स्कॉलर योजना
+{% else %}
+Maha 25 Scholar Path
+{% endif %}
+</h1>
+
+<nav>
+
+<a href="/">
+{% if session.get('language') == 'mr' %}
+मुख्यपृष्ठ
+{% else %}
+Home
+{% endif %}
+</a>
+
+<a href="/about">
+{% if session.get('language') == 'mr' %}
+माहिती
+{% else %}
+About
+{% endif %}
+</a>
+
+<a href="/contact">
+{% if session.get('language') == 'mr' %}
+संपर्क
+{% else %}
+Contact
+{% endif %}
+</a>
+
+<a href="/information">
+{% if session.get('language') == 'mr' %}
+योजना शोधा
+{% else %}
+Information
+{% endif %}
+</a>
+
+<select onchange="changeLanguage(this.value)">
+<option value="en" {% if session.get('language') == 'en' %}selected{% endif %}>English</option>
+<option value="mr" {% if session.get('language') == 'mr' %}selected{% endif %}>मराठी</option>
+</select>
+
+</nav>
+
+</header>
+
+<main>
+
+<div class="con">
+
+<h2>
+{% if session.get('language') == 'mr' %}
+संपर्क करा
+{% else %}
+Contact Us
+{% endif %}
+</h2>
+
+<p>
+{% if session.get('language') == 'mr' %}
+या पोर्टलचा उद्देश नागरिकांना आणि इतर संबंधितांना भारत सरकारच्या योजना आणि सेवांची माहिती एकाच ठिकाणी उपलब्ध करून देणे आहे.
+{% else %}
+The objective behind the portal is to provide a single window access to the information and services being provided by the Indian Government for citizens and other stakeholders.
+{% endif %}
+</p>
+
+<h3>
+{% if session.get('language') == 'mr' %}
+पत्ता
+{% else %}
+Address
+{% endif %}
+</h3>
+
+<h5>Vidyanagari, Bhigwan Road, Baramati, Dist. Pune, Maharashtra</h5>
+
+<p>Email: principal.vpkbiet@vidyapratishthan.com</p>
+
+<p>
+{% if session.get('language') == 'mr' %}
+वेबसाइट:
+{% else %}
+Website:
+{% endif %}
+<a href="https://vpkbiet.org/" target="_blank">Official Website</a>
+</p>
+
+<p>
+{% if session.get('language') == 'mr' %}
+फोन नंबर :
+{% else %}
+Phone Number :
+{% endif %}
++91-2112-239503 / 504 / 500 / 514
+</p>
+
+</div>
+
+</main>
+
+<footer>
+
+<p>
+© 2024 Maha 25 Scholar Path |
+<a href="https://vpkbiet.org/" style="color:#10e8fc;">VPKBIET College Website</a>
+</p>
+
+</footer>
+
+<script>
+function changeLanguage(lang){
+window.location.href="/set_language/"+lang;
+}
+</script>
+
+</body>
+</html>

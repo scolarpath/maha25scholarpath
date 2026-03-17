@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Scheme Finder</title>
+
+<style>
+
+body{
+font-family:sans-serif;
+margin:40px;
+background:#f4f4f4;
+}
+
+.container{
+background:white;
+padding:20px;
+border-radius:8px;
+max-width:600px;
+margin:auto;
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin:10px 0;
+box-sizing:border-box;
+}
+
+button{
+background:#28a745;
+color:white;
+border:none;
+padding:10px;
+width:100%;
+cursor:pointer;
+}
+
+.result-box{
+border-left:5px solid #007bff;
+background:#e9ecef;
+padding:15px;
+margin-top:20px;
+}
+
+.error{
+color:red;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div style="margin-bottom:20px;">
+
+<a href="/">
+{% if session.get('language') == 'mr' %}
+मुख्यपृष्ठ
+{% else %}
+Home
+{% endif %}
+</a> |
+
+<a href="/about">
+{% if session.get('language') == 'mr' %}
+माहिती
+{% else %}
+About
+{% endif %}
+</a> |
+
+<a href="/contact">
+{% if session.get('language') == 'mr' %}
+संपर्क
+{% else %}
+Contact
+{% endif %}
+</a> |
+
+<a href="/information">
+{% if session.get('language') == 'mr' %}
+योजना शोधा
+{% else %}
+Information
+{% endif %}
+</a>
+
+<select onchange="changeLanguage(this.value)">
+<option value="en" {% if session.get('language') == 'en' %}selected{% endif %}>English</option>
+<option value="mr" {% if session.get('language') == 'mr' %}selected{% endif %}>मराठी</option>
+</select>
+
+</div>
+
+<div class="container">
+
+<h2>
+{% if session.get('language') == 'mr' %}
+योग्य योजना शोधा
+{% else %}
+Find Applicable Schemes
+{% endif %}
+</h2>
+
+<form action="/search" method="POST">
+
+<input type="number" name="age"
+placeholder="{% if session.get('language') == 'mr' %}वय प्रविष्ट करा{% else %}Enter Age{% endif %}" required>
+
+<select name="gender">
+<option value="Male">
+{% if session.get('language') == 'mr' %}पुरुष{% else %}Male{% endif %}
+</option>
+<option value="Female">
+{% if session.get('language') == 'mr' %}महिला{% else %}Female{% endif %}
+</option>
+</select>
+
+<select name="caste">
+<option value="Open">
+{% if session.get('language') == 'mr' %}सर्वसाधारण{% else %}General{% endif %}
+</option>
+<option value="SC">SC</option>
+<option value="ST">ST</option>
+<option value="OBC">OBC</option>
+<option value="EWS">EWS</option>
+<option value="NT">NT</option>
+</select>
+
+<input type="number" name="income"
+placeholder="{% if session.get('language') == 'mr' %}वार्षिक उत्पन्न{% else %}Annual Income{% endif %}" required>
+
+<select name="education">
+
+<option value="10th">
+{% if session.get('language') == 'mr' %}10 वी खाली{% else %}Under 10th{% endif %}
+</option>
+
+<option value="12th">
+{% if session.get('language') == 'mr' %}12 वी खाली{% else %}Under 12th{% endif %}
+</option>
+
+<option value="Graduate">
+{% if session.get('language') == 'mr' %}पदवी शिक्षण{% else %}Under Graduation{% endif %}
+</option>
+
+<option value="Post-Graduate">
+{% if session.get('language') == 'mr' %}पदव्युत्तर शिक्षण{% else %}Post Graduation{% endif %}
+</option>
+
+</select>
+<label>
+<input type="checkbox" name="notify" value="on">
+🔔 
+{% if session.get('language') == 'mr' %}
+डेडलाईन सूचना चालू करा
+{% else %}
+DO click for getting notificatons of applicable schmes
+{% endif %}
+</label>
+<button type="submit">
+
+{% if session.get('language') == 'mr' %}
+पात्रता तपासा
+{% else %}
+Check Eligibility
+{% endif %}
+
+</button>
+
+</form>
+
+</div>
+
+<script>
+
+function changeLanguage(lang){
+window.location.href="/set_language/"+lang;
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<h2>Admin Dashboard</h2>
+
+<form action="/add_scheme" method="POST">
+
+<input type="text" name="name" placeholder="Scheme Name">
+
+<select name="gender">
+<option>All</option>
+<option>Male</option>
+<option>Female</option>
+</select>
+
+<select name="caste">
+<option>All</option>
+<option>Open</option>
+<option>SC</option>
+<option>ST</option>
+<option>OBC</option>
+</select>
+
+<input type="number" name="income" placeholder="Income Limit">
+
+<select name="education">
+<option>10th</option>
+<option>12th</option>
+<option>Graduate</option>
+<option>Post-Graduate</option>
+</select>
+
+<input type="text" name="documents" placeholder="Required Documents">
+
+<input type="text" name="link" placeholder="Apply Link">
+
+<button type="submit">Add Scheme</button>
+
+</form>
+
+<hr>
+
+<h3>All Schemes</h3>
+
+<table border="1">
+
+<tr>
+<th>Name</th>
+<th>Caste</th>
+<th>Education</th>
+<th>Income</th>
+<th>Action</th>
+</tr>
+
+{% for scheme in schemes %}
+
+<tr>
+<td>{{ scheme[1] }}</td>
+<td>{{ scheme[3] }}</td>
+<td>{{ scheme[5] }}</td>
+<td>{{ scheme[4] }}</td>
+
+<td>
+<td>
+
+<td>
+
+<a href="/edit_scheme/{{ scheme[0] }}">Edit</a>
+
+|
+
+<a href="/delete_scheme/{{ scheme[0] }}" class="delete-btn">Delete</a>
+
+</td>
+
+</td>
+</td>
+</tr>
+
+{% endfor %}
+
+</table>

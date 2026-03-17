@@ -1,0 +1,49 @@
+app = Flask(__name__)
+
+# Load the dataset (Assuming maha25scheme.csv exists)
+# Required columns: 'name_of_scheme', 'link', 'required_documents', 'gender', 'caste', 'max_income', 'qualification'
+try:
+    df = pd.read_csv('maha25scheme.csv')
+except FileNotFoundError:
+    # Creating a dummy dataset for demonstration
+    data = {
+        'name_of_scheme': ['Scheme A', 'Scheme B'],
+        'link': ['http://example.com', 'http://example.com'],
+        'required_documents': ['Aadhar, Income Cert', 'Caste Cert, Marksheet'],
+        'gender': ['Male', 'Female'],
+        'caste': ['General', 'OBC'],
+        'max_income': [500000, 200000],
+        'qualification': ['Graduate', '12th Pass']
+    }
+    df = pd.DataFrame(data)
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        # Get user inputs
+        age = int(request.form.get('age'))
+        gender = request.form.get('gender')
+        caste = request.form.get('caste')
+        income = float(request.form.get('income'))
+        edu = request.form.get('education')
+
+        # Rule 1: Age check
+        if age > 25:
+            return "This website is for students under 25 years old."
+
+        # Rule 2: Filter dataset based on other parameters
+        # Adjust column names in df.query to match your actual CSV columns
+        filtered_df = df[
+            (df['gender'] == gender) & 
+            (df['caste'] == caste) & 
+            (df['max_income'] >= income) & 
+            (df['qualification'] == edu)
+        ]
+
+        results = filtered_df[['name_of_scheme', 'link', 'required_documents']].to_dict(orient='records')
+        return render_template('results.html', schemes=results)
+
+    return render_template('index.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
