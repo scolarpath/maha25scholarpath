@@ -4,3 +4,4 @@ pandas
 openpyxl
 APScheduler
 Flask-Mail
+mysql-connector-python
