@@ -17,7 +17,7 @@ from email.mime.multipart import MIMEMultipart
 
 # ---------------- LOAD DATASET ----------------
 
-df = pd.read_excel("dataset.xlsx")
+df = pd.read_excel("dataset.csv")
 
 # ---------------- LOGGING ----------------
 
