@@ -331,6 +331,7 @@ def send_otp():
         msg.body = "Your OTP for email verification is: " + otp
 
         mail.send(msg)
+        print("OTP EMAIL SENT")
 
         return render_template("verify.html", email=email)
 
