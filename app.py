@@ -1,6 +1,3 @@
-# Replace your current `app.py` important sections with the following updated code.
-
-
 from flask import Flask, render_template, request, redirect, session
 from flask_mail import Mail, Message
 import random
@@ -9,15 +6,25 @@ import sqlite3
 import pandas as pd
 import logging
 import smtplib
-
 from datetime import datetime, timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-# ---------------- LOAD DATASET ----------------
+# ---------------- FLASK APP ----------------
 
-df = pd.read_csv("dataset.csv")
+app = Flask(__name__)
+app.secret_key = "Maha25ScholarPathSecureKey"
+
+# ---------------- SAFE DATA LOADING (FIXED) ----------------
+
+df = None
+
+def get_data():
+    global df
+    if df is None:
+        df = pd.read_csv("dataset.csv", low_memory=True)
+    return df
 
 # ---------------- LOGGING ----------------
 
@@ -28,19 +35,12 @@ logging.basicConfig(
 )
 
 email_logger = logging.getLogger("email_logger")
-email_logger.setLevel(logging.INFO)
-
 file_handler = logging.FileHandler("reminder_logs.txt")
 formatter = logging.Formatter("%(asctime)s - %(message)s")
 file_handler.setFormatter(formatter)
 email_logger.addHandler(file_handler)
 
-# ---------------- FLASK APP ----------------
-
-app = Flask(__name__)
-app.secret_key = "Maha25ScholarPathSecureKey"
-
-# ---------------- SQLITE DATABASE ----------------
+# ---------------- SQLITE ----------------
 
 conn = sqlite3.connect("users.db", check_same_thread=False)
 cursor = conn.cursor()
@@ -53,7 +53,6 @@ CREATE TABLE IF NOT EXISTS users (
     password TEXT
 )
 """)
-
 conn.commit()
 
 # ---------------- EMAIL CONFIG ----------------
@@ -67,7 +66,7 @@ app.config['MAIL_DEFAULT_SENDER'] = 'maha25scholarpath.noreply@gmail.com'
 
 mail = Mail(app)
 
-# ---------------- OTP STORAGE ----------------
+# ---------------- OTP ----------------
 
 otp_storage = {}
 
@@ -80,68 +79,46 @@ education_levels = {
     "Post-Graduate": 4
 }
 
-# ---------------- EMAIL VALIDATION ----------------
-
+# ---------------- VALID EMAIL ----------------
 
 def valid_email(email):
-    pattern = r'^[\w.-]+@[\w.-]+\.\w+$'
-    return re.match(pattern, email)
+    return re.match(r'^[\w.-]+@[\w.-]+\.\w+$', email)
 
-# ---------------- DATABASE FUNCTIONS ----------------
-
+# ---------------- USERS ----------------
 
 def get_users_with_upcoming_deadlines():
-
     cursor.execute("SELECT id, name, email FROM users")
     rows = cursor.fetchall()
 
-    users = []
+    return [{"id": r[0], "name": r[1], "email": r[2]} for r in rows]
 
-    for row in rows:
-        users.append({
-            "id": row[0],
-            "name": row[1],
-            "email": row[2]
-        })
-
-    return users
-
+# ---------------- DEADLINES (FIXED) ----------------
 
 def get_user_deadlines(user_id):
-
     deadlines = {}
+    data = get_data()
 
     try:
-        for _, row in df.iterrows():
-
+        for _, row in data.iterrows():
             if "deadline" in row and pd.notna(row["deadline"]):
                 deadlines[row["name_of_scheme"]] = str(row["deadline"])
-
     except Exception as e:
         print("Deadline Error:", e)
 
     return deadlines
 
-# ---------------- EMAIL REMINDER ----------------
-
+# ---------------- EMAIL ----------------
 
 def send_deadline_email(to_email, deadlines, user_name="User"):
-
-    sender_email = "maha25scholarpath.noreply@gmail.com"
-    sender_password = "nzee dymu qfmw domm"
+    sender_email = app.config['MAIL_USERNAME']
+    sender_password = app.config['MAIL_PASSWORD']
 
     message = MIMEMultipart()
     message["From"] = sender_email
     message["To"] = to_email
     message["Subject"] = "Upcoming Scheme Deadlines"
 
-    body = f"""
-    <html>
-    <body>
-    <p>Hello {user_name},</p>
-    <p>Here are your upcoming deadlines:</p>
-    <ul>
-    """
+    body = f"<html><body><p>Hello {user_name},</p><ul>"
 
     for scheme, date in deadlines.items():
         body += f"<li>{scheme}: {date}</li>"
@@ -159,45 +136,32 @@ def send_deadline_email(to_email, deadlines, user_name="User"):
         logging.info(f"Email sent to {to_email}")
 
     except Exception as e:
-        logging.error(f"Failed to send email to {to_email}: {e}")
+        logging.error(f"Failed: {e}")
 
-# ---------------- REMINDER ROUTE ----------------
+# ---------------- REMINDER ----------------
 
-
-@app.route("/send_reminders")
 def send_reminders():
-
     today = datetime.today()
-
     users = get_users_with_upcoming_deadlines()
 
     for user in users:
-
         deadlines = get_user_deadlines(user["id"])
 
         upcoming = {
-            scheme: date
-            for scheme, date in deadlines.items()
-            if datetime.strptime(date.split()[0], "%Y-%m-%d") <= today + timedelta(days=7)
+            s: d for s, d in deadlines.items()
+            if datetime.strptime(d.split()[0], "%Y-%m-%d") <= today + timedelta(days=7)
         }
 
         if upcoming:
-            try:
-                send_deadline_email(user["email"], upcoming, user["name"])
+            send_deadline_email(user["email"], upcoming, user["name"])
 
-            except Exception as e:
-                email_logger.error(f"Failed to send email: {e}")
-
-    return "Reminder emails sent!"
-
-# ---------------- SCHEDULER ----------------
+# ---------------- SCHEDULER (SAFE FOR RENDER) ----------------
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=send_reminders, trigger="interval", hours=24)
 scheduler.start()
 
 # ---------------- LANGUAGE ----------------
-
 
 @app.route("/set_language/<lang>")
 def set_language(lang):
@@ -206,26 +170,21 @@ def set_language(lang):
 
 # ---------------- PAGES ----------------
 
-
 @app.route("/")
 def index():
     return render_template("index.html")
-
 
 @app.route("/home")
 def home():
     return render_template("home.html")
 
-
 @app.route("/about")
 def about():
     return render_template("about.html")
 
-
 @app.route("/contact")
 def contact():
     return render_template("contact.html")
-
 
 @app.route("/information")
 def information():
@@ -233,10 +192,8 @@ def information():
 
 # ---------------- REGISTER ----------------
 
-
 @app.route("/register", methods=["POST"])
 def register():
-
     name = request.form["name"]
     email = request.form["email"]
     password = request.form["password"]
@@ -245,106 +202,75 @@ def register():
     if otp_storage.get(email) != otp:
         return "Invalid OTP"
 
-    cursor.execute(
-        "INSERT INTO users (name, email, password) VALUES (?,?,?)",
-        (name, email, password)
-    )
-
+    cursor.execute("INSERT INTO users (name, email, password) VALUES (?,?,?)",
+                   (name, email, password))
     conn.commit()
 
     return redirect("/home")
 
 # ---------------- LOGIN ----------------
 
-
 @app.route("/login", methods=["POST"])
 def login():
-
     email = request.form["email"].strip()
     password = request.form["password"].strip()
 
-    cursor.execute(
-        "SELECT * FROM users WHERE email=? AND password=?",
-        (email, password)
-    )
-
+    cursor.execute("SELECT * FROM users WHERE email=? AND password=?", (email, password))
     user = cursor.fetchone()
 
     if user:
         session["user"] = email
         return redirect("/information")
-
-    else:
-        return "Invalid email or password"
+    return "Invalid email or password"
 
 # ---------------- ADMIN ----------------
 
-
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
-
     if request.method == "POST":
-
-        username = request.form["username"]
-        password = request.form["password"]
-
-        if username == "admin" and password == "admin123":
+        if request.form["username"] == "admin" and request.form["password"] == "admin123":
             session["admin"] = True
             return redirect("/admin_dashboard")
-
-        else:
-            return "Invalid Admin Login"
+        return "Invalid Admin Login"
 
     return render_template("admin_login.html")
 
-
 @app.route("/admin_dashboard")
 def admin_dashboard():
-
     if "admin" not in session:
         return redirect("/admin")
 
-    schemes = df.values.tolist()
-
-    return render_template("admin_dashboard.html", schemes=schemes)
+    data = get_data()
+    return render_template("admin_dashboard.html", schemes=data.values.tolist())
 
 # ---------------- OTP ----------------
 
-
-@app.route("/send_otp", methods=["GET", "POST"])
+@app.route("/send_otp", methods=["POST"])
 def send_otp():
-
     email = request.form.get("email")
 
     if not valid_email(email):
-        return "Invalid email format"
+        return "Invalid email"
 
     otp = str(random.randint(100000, 999999))
     otp_storage[email] = otp
 
+    msg = Message(
+        subject="Maha25 ScholarPath OTP",
+        recipients=[email],
+        body=f"Your OTP is {otp}"
+    )
+
     try:
-        msg = Message(
-            subject="Maha25 ScholarPath Email Verification",
-            recipients=[email]
-        )
-
-        msg.body = "Your OTP for email verification is: " + otp
-
         mail.send(msg)
-        print("OTP EMAIL SENT")
-
         return render_template("verify.html", email=email)
-
-    except Exception as e:
-        print("Mail error:", e)
-        return "Failed to send OTP"
+    except:
+        return "OTP send failed"
 
 # ---------------- VERIFY OTP ----------------
 
-
 @app.route("/verify_otp", methods=["POST"])
 def verify_otp():
-
     email = request.form.get("email")
     user_otp = request.form.get("otp")
 
@@ -352,17 +278,14 @@ def verify_otp():
         session["verified_email"] = email
         return redirect("/home")
 
-    else:
-        return "Invalid OTP"
+    return "Invalid OTP"
 
 # ---------------- SEARCH ----------------
 
 current_date = datetime.today().date()
 
-
 @app.route("/search", methods=["POST"])
 def search():
-
     caste = request.form["caste"].lower()
     gender = request.form["gender"].lower()
     income = int(request.form["income"])
@@ -373,53 +296,33 @@ def search():
         caste = "open"
 
     if age > 25:
-
-        if session.get("language") == "mr":
-            msg = "ही वेबसाइट फक्त २५ वर्षे किंवा त्याखालील वयाच्या वापरकर्त्यांसाठी उपलब्ध आहे."
-
-        else:
-            msg = "This website is applicable only for users aged 25 or below."
-
+        msg = "Only users aged 25 or below allowed"
         return render_template("output.html", schemes=[], message=msg)
 
     user_level = education_levels.get(education, 0)
 
-    schemes = df.values.tolist()
+    data = get_data()
+    schemes = data.values.tolist()
 
-    eligible_schemes = []
+    eligible = []
 
-    for scheme in schemes:
-
+    for s in schemes:
         try:
-            scheme_gender = str(scheme[2]).lower()
-            scheme_caste = str(scheme[3]).lower()
-            scheme_income = int(scheme[4])
-            scheme_education = scheme[5]
-            scheme_level = education_levels.get(scheme_education, 0)
-
             if (
-                (scheme_caste == caste or scheme_caste in ["all"]) and
-                (scheme_gender == gender or scheme_gender in ["all", "any"]) and
-                income <= scheme_income and
-                user_level >= scheme_level
+                (str(s[3]).lower() in [caste, "all"]) and
+                (str(s[2]).lower() in [gender, "all", "any"]) and
+                income <= int(s[4]) and
+                user_level >= education_levels.get(s[5], 0)
             ):
-                eligible_schemes.append(scheme)
-
+                eligible.append(s)
         except:
             pass
 
-    return render_template(
-        "output.html",
-        schemes=eligible_schemes,
-        current_date=current_date,
-        message=None
-    )
+    return render_template("output.html",
+                           schemes=eligible,
+                           current_date=current_date)
 
-# ---------------- RUN APP ----------------
-
+# ---------------- RUN ----------------
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-
-
-
