@@ -1,6 +1,6 @@
 # Replace your current `app.py` important sections with the following updated code.
 
-```python
+
 from flask import Flask, render_template, request, redirect, session
 from flask_mail import Mail, Message
 import random
