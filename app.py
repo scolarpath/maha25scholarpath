@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, session
 from flask_mail import Mail, Message
-import mysql.connector
+#import mysql.connector
 import random
 import re
 from datetime import datetime
@@ -12,6 +12,9 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import pandas as pd
+
+df = pd.read_excel("dataset.xlsx")
 
 logging.basicConfig(
     filename="email_reminders.log",
@@ -38,8 +41,9 @@ app.secret_key = "Maha25ScholarPathSecureKey"
 # Step 1: Database placeholder functions
 def get_users_with_upcoming_deadlines():
     cursor = db.cursor()
-    cursor.execute("SELECT id, name, email FROM users")
-    rows = cursor.fetchall()
+    #cursor.execute("SELECT id, name, email FROM users")
+    #rows = cursor.fetchall()
+    results = df.to_dict(orient="records")
     # Convert to list of dicts
     users = [{"id": row[0], "name": row[1], "email": row[2]} for row in rows]
     cursor.close()
@@ -90,14 +94,14 @@ def send_deadline_email(to_email, deadlines, user_name="User"):
 
 # ---------------- DATABASE CONNECTION ----------------
 
-db = mysql.connector.connect(
-host="localhost",
-user="root",
-password="",
-database="maha25scholarpath"
-)
+#db = mysql.connector.connect(
+#host="localhost",
+#user="root",
+#password="",
+#database="maha25scholarpath"
+#)
 
-cursor = db.cursor()
+#cursor = db.cursor()
 
 # ---------------- EMAIL CONFIG ----------------
 
