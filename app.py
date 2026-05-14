@@ -93,7 +93,21 @@ def send_deadline_email(to_email, deadlines, user_name="User"):
         logging.error(f"Failed to send email to {to_email}: {e}")
 
 # ---------------- DATABASE CONNECTION ----------------
+import sqlite3
 
+conn = sqlite3.connect("users.db", check_same_thread=False)
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    email TEXT,
+    password TEXT
+)
+""")
+
+conn.commit()
 #db = mysql.connector.connect(
 #host="localhost",
 #user="root",
@@ -218,7 +232,7 @@ def register():
         "INSERT INTO users (name, email, password) VALUES (%s,%s,%s)",
         (name, email, password)
     )
-    db.commit()
+   conn.commit()
 
     return redirect("/home")
 
@@ -290,7 +304,7 @@ def add_scheme():
         (name, gender, caste, income, education, documents, link)
     )
 
-    db.commit()
+   conn.commit()
 
     return redirect("/admin_dashboard")
 
@@ -301,7 +315,7 @@ def delete_scheme(id):
         return redirect("/admin")
 
     cursor.execute("DELETE FROM schemes WHERE id=%s", (id,))
-    db.commit()
+   conn.commit()
 
     return redirect("/admin_dashboard")
 
@@ -341,7 +355,7 @@ def update_scheme():
         (name, gender, caste, income, education, id)
     )
 
-    db.commit()
+    conn.commit()
 
     return redirect("/admin_dashboard")
 
@@ -402,7 +416,7 @@ def create_account():
         (email, password)
     )
 
-    db.commit()
+    conn.commit()
 
     return redirect("/home")
 # ---------------- SEARCH SCHEMES ----------------
