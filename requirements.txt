@@ -7,4 +7,4 @@ Flask-Mail
 mysql-connector-python
 sendgrid
 requests
-sqlite3
+
