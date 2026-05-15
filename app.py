@@ -2,13 +2,16 @@ from flask import Flask, render_template, request, redirect, session
 import random
 import re
 import sqlite3
+import requests
 import logging
-from datetime import datetime
 
 # ---------------- APP ----------------
 
 app = Flask(__name__)
 app.secret_key = "Maha25ScholarPathSecureKey"
+
+# ---------------- FAST2SMS API ----------------
+FAST2SMS_API_KEY = "REPLACE_WITH_YOUR_NEW_KEY"
 
 # ---------------- DB ----------------
 
@@ -29,12 +32,29 @@ logging.basicConfig(
 
 otp_storage = {}
 
-# ---------------- EMAIL VALIDATION ----------------
+# ---------------- VALIDATION ----------------
 
 def valid_email(email):
     return re.match(r'^[\w.-]+@[\w.-]+\.\w+$', email)
 
-# ---------------- HOME ----------------
+def send_sms_otp(number, otp):
+    url = "https://www.fast2sms.com/dev/bulkV2"
+
+    payload = {
+        "authorization": FAST2SMS_API_KEY,
+        "route": "otp",
+        "variables_values": otp,
+        "numbers": number
+    }
+
+    headers = {
+        "cache-control": "no-cache"
+    }
+
+    response = requests.post(url, data=payload, headers=headers)
+    logging.info(f"SMS response: {response.text}")
+
+# ---------------- ROUTES ----------------
 
 @app.route("/")
 def index():
@@ -44,22 +64,30 @@ def index():
 def home():
     return render_template("home.html")
 
-# ---------------- 🔥 OTP (FINAL FIX - NO EMAIL, NO TIMEOUT) ----------------
+# ---------------- OTP SEND (FINAL FIX) ----------------
 
 @app.route("/send_otp", methods=["POST"])
 def send_otp():
     email = request.form.get("email")
+    number = request.form.get("number")
 
     if not valid_email(email):
         return "Invalid email format"
 
+    if not number:
+        return "Phone number required"
+
     otp = str(random.randint(100000, 999999))
     otp_storage[email] = otp
 
-    # 🔥 SAFE: no email sending, no blocking
-    print(f"OTP for {email}: {otp}")
+    try:
+        send_sms_otp(number, otp)
+        logging.info(f"OTP sent to {number}")
+        return render_template("verify.html", email=email)
 
-    return render_template("verify.html", email=email)
+    except Exception as e:
+        logging.error(f"OTP failed: {e}")
+        return "Failed to send OTP"
 
 # ---------------- VERIFY OTP ----------------
 
@@ -74,62 +102,7 @@ def verify_otp():
 
     return "Invalid OTP"
 
-# ---------------- REGISTER ----------------
-
-@app.route("/register", methods=["POST"])
-def register():
-    name = request.form["name"]
-    email = request.form["email"]
-    password = request.form["password"]
-    otp = request.form["otp"]
-
-    if otp_storage.get(email) != otp:
-        return "Invalid OTP"
-
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute(
-        "INSERT INTO users (name, email, password) VALUES (?,?,?)",
-        (name, email, password)
-    )
-    conn.commit()
-    conn.close()
-
-    return redirect("/home")
-
-# ---------------- LOGIN ----------------
-
-@app.route("/login", methods=["POST"])
-def login():
-    email = request.form["email"]
-    password = request.form["password"]
-
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute(
-        "SELECT * FROM users WHERE email=? AND password=?",
-        (email, password)
-    )
-
-    user = cursor.fetchone()
-    conn.close()
-
-    if user:
-        session["user"] = email
-        return redirect("/home")
-
-    return "Invalid login"
-
-# ---------------- SEARCH ----------------
-
-education_levels = {
-    "10th": 1,
-    "12th": 2,
-    "Graduate": 3,
-    "Post-Graduate": 4
-}
+# ---------------- SEARCH (SAFE BASIC VERSION) ----------------
 
 @app.route("/search", methods=["POST"])
 def search():
@@ -139,15 +112,8 @@ def search():
     education = request.form["education"]
     age = int(request.form["age"])
 
-    if caste == "general":
-        caste = "open"
-
     if age > 25:
-        return render_template(
-            "output.html",
-            schemes=[],
-            message="Only users aged 25 or below allowed"
-        )
+        return render_template("output.html", schemes=[], message="Only users aged 25 or below allowed")
 
     conn = get_db()
     cursor = conn.cursor()
@@ -156,15 +122,13 @@ def search():
     conn.close()
 
     eligible = []
-    user_level = education_levels.get(education, 0)
 
     for r in rows:
         try:
             if (
                 str(r["caste"]).lower() in [caste, "all"] and
                 str(r["gender"]).lower() in [gender, "all", "any"] and
-                income <= int(r["income"]) and
-                user_level >= education_levels.get(r["education"], 0)
+                income <= int(r["income"])
             ):
                 eligible.append(dict(r))
         except:
