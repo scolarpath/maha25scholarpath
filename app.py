@@ -69,18 +69,32 @@ def send_sms_otp(number, otp):
 # ---------------- EMAIL OTP ----------------
 
 def send_email_otp(email, otp):
-    msg = MIMEText(f"Your OTP for verification is: {otp}")
-    msg["Subject"] = "OTP Verification"
-    msg["From"] = EMAIL_SENDER
-    msg["To"] = email
+    try:
+        print("EMAIL FUNCTION STARTED")
 
-    server = smtplib.SMTP("smtp.gmail.com", 587)
-    server.starttls()
-    server.login(EMAIL_SENDER, EMAIL_PASSWORD)
-    server.sendmail(EMAIL_SENDER, email, msg.as_string())
-    server.quit()
+        msg = MIMEText(f"Your OTP for verification is: {otp}")
+        msg["Subject"] = "OTP Verification"
+        msg["From"] = EMAIL_SENDER
+        msg["To"] = email
 
-    logging.info(f"Email OTP sent to {email}")
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.set_debuglevel(1)  # shows real connection logs
+        server.starttls()
+
+        print("Logging into Gmail...")
+        server.login(EMAIL_SENDER, EMAIL_PASSWORD)
+
+        print("Sending email...")
+        server.sendmail(EMAIL_SENDER, email, msg.as_string())
+
+        server.quit()
+
+        print("EMAIL SENT SUCCESSFULLY")
+        logging.info(f"Email OTP sent to {email}")
+
+    except Exception as e:
+        print("EMAIL ERROR:", e)
+        logging.error(f"Email failed: {e}")
 
 # ---------------- ROUTES ----------------
 
