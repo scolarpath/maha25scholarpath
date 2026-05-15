@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.secret_key = "Maha25ScholarPathSecureKey"
 
 # ---------------- FAST2SMS API ----------------
-FAST2SMS_API_KEY = "REPLACE_WITH_YOUR_NEW_KEY"
+FAST2SMS_API_KEY = "Xk2LJY05znqufLKP90C8j995dqaSlJjpIhwxigc0hFpDIWD62JzWUhNrAEaf"
 
 # ---------------- DB ----------------
 
