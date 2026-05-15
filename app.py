@@ -5,7 +5,6 @@ import re
 import sqlite3
 import pandas as pd
 import logging
-import smtplib
 from datetime import datetime, timedelta
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -15,10 +14,14 @@ from email.mime.multipart import MIMEMultipart
 app = Flask(__name__)
 app.secret_key = "Maha25ScholarPathSecureKey"
 
-# ---------------- DATA LOADER (SAFE) ----------------
+# ---------------- DATA (CRASH SAFE FIX) ----------------
+# Load ONCE, reduce memory usage
 
-def get_data():
-    return pd.read_csv("dataset.csv", low_memory=True)
+df = pd.read_csv(
+    "dataset.csv",
+    low_memory=True,
+    dtype=str
+).fillna("")
 
 # ---------------- LOGGING ----------------
 
@@ -28,7 +31,7 @@ logging.basicConfig(
     format="%(asctime)s - %(message)s"
 )
 
-# ---------------- DB ----------------
+# ---------------- SQLITE ----------------
 
 conn = sqlite3.connect("users.db", check_same_thread=False)
 cursor = conn.cursor()
@@ -71,7 +74,7 @@ def index():
 def home():
     return render_template("home.html")
 
-# ---------------- OTP SEND ----------------
+# ---------------- OTP SEND (SAFE) ----------------
 
 @app.route("/send_otp", methods=["POST"])
 def send_otp():
@@ -86,17 +89,17 @@ def send_otp():
     msg = Message(
         subject="Maha25 ScholarPath OTP",
         recipients=[email],
-        body=f"Your OTP is {otp}"
+        body=f"Your OTP is: {otp}"
     )
 
     try:
-        mail.send(msg)   # simple + stable
+        mail.send(msg)
         return render_template("verify.html", email=email)
     except Exception as e:
         print("Mail error:", e)
-        return "Failed to send OTP"
+        return "OTP sending failed"
 
-# ---------------- VERIFY ----------------
+# ---------------- VERIFY OTP ----------------
 
 @app.route("/verify_otp", methods=["POST"])
 def verify_otp():
@@ -121,8 +124,10 @@ def register():
     if otp_storage.get(email) != otp:
         return "Invalid OTP"
 
-    cursor.execute("INSERT INTO users (name, email, password) VALUES (?,?,?)",
-                   (name, email, password))
+    cursor.execute(
+        "INSERT INTO users (name, email, password) VALUES (?,?,?)",
+        (name, email, password)
+    )
     conn.commit()
 
     return redirect("/home")
@@ -134,7 +139,10 @@ def login():
     email = request.form["email"].strip()
     password = request.form["password"].strip()
 
-    cursor.execute("SELECT * FROM users WHERE email=? AND password=?", (email, password))
+    cursor.execute(
+        "SELECT * FROM users WHERE email=? AND password=?",
+        (email, password)
+    )
     user = cursor.fetchone()
 
     if user:
@@ -143,7 +151,7 @@ def login():
 
     return "Invalid login"
 
-# ---------------- SEARCH ----------------
+# ---------------- EDUCATION LEVELS ----------------
 
 education_levels = {
     "10th": 1,
@@ -151,6 +159,8 @@ education_levels = {
     "Graduate": 3,
     "Post-Graduate": 4
 }
+
+# ---------------- SEARCH (SAFE, NO CRASH) ----------------
 
 @app.route("/search", methods=["POST"])
 def search():
@@ -170,22 +180,32 @@ def search():
             message="Only users aged 25 or below allowed"
         )
 
-    data = get_data()
-    schemes = data.values.tolist()
-
     eligible = []
 
-    for s in schemes:
-        try:
+    try:
+        for _, s in df.iterrows():
+
+            scheme_gender = str(s[2]).lower()
+            scheme_caste = str(s[3]).lower()
+
+            try:
+                scheme_income = int(s[4])
+            except:
+                scheme_income = 0
+
+            scheme_edu = str(s[5])
+            scheme_level = education_levels.get(scheme_edu, 0)
+
             if (
-                (str(s[3]).lower() in [caste, "all"]) and
-                (str(s[2]).lower() in [gender, "all", "any"]) and
-                income <= int(s[4]) and
-                education_levels.get(education, 0) >= education_levels.get(s[5], 0)
+                (scheme_caste in [caste, "all"]) and
+                (scheme_gender in [gender, "all", "any"]) and
+                income <= scheme_income and
+                education_levels.get(education, 0) >= scheme_level
             ):
-                eligible.append(s)
-        except:
-            pass
+                eligible.append(list(s))
+
+    except Exception as e:
+        print("Search error:", e)
 
     return render_template("output.html", schemes=eligible)
 
