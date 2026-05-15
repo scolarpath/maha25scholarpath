@@ -3,48 +3,28 @@ from flask_mail import Mail, Message
 import random
 import re
 import sqlite3
-import pandas as pd
 import logging
 from datetime import datetime, timedelta
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 
 # ---------------- APP ----------------
 
 app = Flask(__name__)
 app.secret_key = "Maha25ScholarPathSecureKey"
 
-# ---------------- DATA (CRASH SAFE FIX) ----------------
-# Load ONCE, reduce memory usage
+# ---------------- DB CONNECTION ----------------
 
-df = pd.read_csv(
-    "dataset.csv",
-    low_memory=True,
-    dtype=str
-).fillna("")
+def get_db():
+    conn = sqlite3.connect("data.db")
+    conn.row_factory = sqlite3.Row
+    return conn
 
 # ---------------- LOGGING ----------------
 
 logging.basicConfig(
-    filename="email_reminders.log",
+    filename="app.log",
     level=logging.INFO,
     format="%(asctime)s - %(message)s"
 )
-
-# ---------------- SQLITE ----------------
-
-conn = sqlite3.connect("users.db", check_same_thread=False)
-cursor = conn.cursor()
-
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    email TEXT UNIQUE,
-    password TEXT
-)
-""")
-conn.commit()
 
 # ---------------- MAIL ----------------
 
@@ -64,7 +44,7 @@ otp_storage = {}
 def valid_email(email):
     return re.match(r'^[\w.-]+@[\w.-]+\.\w+$', email)
 
-# ---------------- HOME ----------------
+# ---------------- ROUTES ----------------
 
 @app.route("/")
 def index():
@@ -74,84 +54,45 @@ def index():
 def home():
     return render_template("home.html")
 
-# ---------------- OTP SEND (SAFE) ----------------
+# ---------------- OTP ----------------
 
 @app.route("/send_otp", methods=["POST"])
 def send_otp():
     email = request.form.get("email")
 
     if not valid_email(email):
-        return "Invalid email format"
+        return "Invalid email"
 
     otp = str(random.randint(100000, 999999))
     otp_storage[email] = otp
 
     msg = Message(
-        subject="Maha25 ScholarPath OTP",
+        subject="OTP Verification",
         recipients=[email],
-        body=f"Your OTP is: {otp}"
+        body=f"Your OTP is {otp}"
     )
 
     try:
         mail.send(msg)
         return render_template("verify.html", email=email)
     except Exception as e:
-        print("Mail error:", e)
-        return "OTP sending failed"
+        print(e)
+        return "Failed OTP send"
 
-# ---------------- VERIFY OTP ----------------
+# ---------------- VERIFY ----------------
 
 @app.route("/verify_otp", methods=["POST"])
 def verify_otp():
     email = request.form.get("email")
-    user_otp = request.form.get("otp")
+    otp = request.form.get("otp")
 
-    if otp_storage.get(email) == user_otp:
+    if otp_storage.get(email) == otp:
         session["verified_email"] = email
         return redirect("/home")
 
     return "Invalid OTP"
 
-# ---------------- REGISTER ----------------
-
-@app.route("/register", methods=["POST"])
-def register():
-    name = request.form["name"]
-    email = request.form["email"]
-    password = request.form["password"]
-    otp = request.form["otp"]
-
-    if otp_storage.get(email) != otp:
-        return "Invalid OTP"
-
-    cursor.execute(
-        "INSERT INTO users (name, email, password) VALUES (?,?,?)",
-        (name, email, password)
-    )
-    conn.commit()
-
-    return redirect("/home")
-
-# ---------------- LOGIN ----------------
-
-@app.route("/login", methods=["POST"])
-def login():
-    email = request.form["email"].strip()
-    password = request.form["password"].strip()
-
-    cursor.execute(
-        "SELECT * FROM users WHERE email=? AND password=?",
-        (email, password)
-    )
-    user = cursor.fetchone()
-
-    if user:
-        session["user"] = email
-        return redirect("/home")
-
-    return "Invalid login"
-
-# ---------------- EDUCATION LEVELS ----------------
+# ---------------- SEARCH (SQLITE VERSION) ----------------
 
 education_levels = {
     "10th": 1,
@@ -159,8 +100,6 @@ education_levels = {
     "Graduate": 3,
     "Post-Graduate": 4
 }
-
-# ---------------- SEARCH (SAFE, NO CRASH) ----------------
 
 @app.route("/search", methods=["POST"])
 def search():
@@ -180,32 +119,36 @@ def search():
             message="Only users aged 25 or below allowed"
         )
 
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM schemes")
+    rows = cursor.fetchall()
+
     eligible = []
 
-    try:
-        for _, s in df.iterrows():
+    user_level = education_levels.get(education, 0)
 
-            scheme_gender = str(s[2]).lower()
-            scheme_caste = str(s[3]).lower()
-
-            try:
-                scheme_income = int(s[4])
-            except:
-                scheme_income = 0
-
-            scheme_edu = str(s[5])
+    for row in rows:
+        try:
+            scheme_caste = str(row["caste"]).lower()
+            scheme_gender = str(row["gender"]).lower()
+            scheme_income = int(row["income"])
+            scheme_edu = str(row["education"]).strip()
             scheme_level = education_levels.get(scheme_edu, 0)
 
             if (
                 (scheme_caste in [caste, "all"]) and
                 (scheme_gender in [gender, "all", "any"]) and
                 income <= scheme_income and
-                education_levels.get(education, 0) >= scheme_level
+                user_level >= scheme_level
             ):
-                eligible.append(list(s))
+                eligible.append(dict(row))
 
-    except Exception as e:
-        print("Search error:", e)
+        except:
+            pass
+
+    conn.close()
 
     return render_template("output.html", schemes=eligible)
 
