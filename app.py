@@ -4,14 +4,23 @@ import re
 import sqlite3
 import requests
 import logging
+import smtplib
+import time
+from email.mime.text import MIMEText
 
 # ---------------- APP ----------------
 
 app = Flask(__name__)
 app.secret_key = "Maha25ScholarPathSecureKey"
 
-# ---------------- FAST2SMS API ----------------
-FAST2SMS_API_KEY = "Xk2LJY05znqufLKP90C8j995dqaSlJjpIhwxigc0hFpDIWD62JzWUhNrAEaf"
+# ---------------- CONFIG ----------------
+
+FAST2SMS_API_KEY = "YOUR_FAST2SMS_API_KEY"
+
+EMAIL_SENDER = "yourgmail@gmail.com"
+EMAIL_PASSWORD = "your_app_password"   # Gmail App Password ONLY
+
+OTP_EXPIRY_TIME = 300  # 5 minutes
 
 # ---------------- DB ----------------
 
@@ -29,6 +38,7 @@ logging.basicConfig(
 )
 
 # ---------------- OTP STORAGE ----------------
+# format: { email: {"otp": "123456", "time": timestamp, "number": phone} }
 
 otp_storage = {}
 
@@ -36,6 +46,8 @@ otp_storage = {}
 
 def valid_email(email):
     return re.match(r'^[\w.-]+@[\w.-]+\.\w+$', email)
+
+# ---------------- SMS OTP ----------------
 
 def send_sms_otp(number, otp):
     url = "https://www.fast2sms.com/dev/bulkV2"
@@ -47,12 +59,28 @@ def send_sms_otp(number, otp):
         "numbers": number
     }
 
-    headers = {
-        "cache-control": "no-cache"
-    }
+    response = requests.post(url, data=payload)
 
-    response = requests.post(url, data=payload, headers=headers)
     logging.info(f"SMS response: {response.text}")
+
+    if response.status_code != 200:
+        raise Exception("SMS sending failed")
+
+# ---------------- EMAIL OTP ----------------
+
+def send_email_otp(email, otp):
+    msg = MIMEText(f"Your OTP for verification is: {otp}")
+    msg["Subject"] = "OTP Verification"
+    msg["From"] = EMAIL_SENDER
+    msg["To"] = email
+
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.starttls()
+    server.login(EMAIL_SENDER, EMAIL_PASSWORD)
+    server.sendmail(EMAIL_SENDER, email, msg.as_string())
+    server.quit()
+
+    logging.info(f"Email OTP sent to {email}")
 
 # ---------------- ROUTES ----------------
 
@@ -64,7 +92,7 @@ def index():
 def home():
     return render_template("home.html")
 
-# ---------------- OTP SEND (FINAL FIX) ----------------
+# ---------------- SEND OTP ----------------
 
 @app.route("/send_otp", methods=["POST"])
 def send_otp():
@@ -78,11 +106,19 @@ def send_otp():
         return "Phone number required"
 
     otp = str(random.randint(100000, 999999))
-    otp_storage[email] = otp
+
+    otp_storage[email] = {
+        "otp": otp,
+        "time": time.time(),
+        "number": number
+    }
 
     try:
         send_sms_otp(number, otp)
-        logging.info(f"OTP sent to {number}")
+        send_email_otp(email, otp)
+
+        logging.info(f"OTP sent to {email}, {number}")
+
         return render_template("verify.html", email=email)
 
     except Exception as e:
@@ -96,13 +132,24 @@ def verify_otp():
     email = request.form.get("email")
     user_otp = request.form.get("otp")
 
-    if otp_storage.get(email) == user_otp:
+    data = otp_storage.get(email)
+
+    if not data:
+        return "OTP not found or expired"
+
+    # check expiry
+    if time.time() - data["time"] > OTP_EXPIRY_TIME:
+        otp_storage.pop(email, None)
+        return "OTP expired"
+
+    if data["otp"] == user_otp:
         session["verified_email"] = email
+        otp_storage.pop(email, None)
         return redirect("/home")
 
     return "Invalid OTP"
 
-# ---------------- SEARCH (SAFE BASIC VERSION) ----------------
+# ---------------- SEARCH ----------------
 
 @app.route("/search", methods=["POST"])
 def search():
