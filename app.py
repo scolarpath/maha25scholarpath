@@ -4,7 +4,6 @@ import random
 import re
 import sqlite3
 import logging
-import threading
 from datetime import datetime
 
 # ---------------- APP ----------------
@@ -12,7 +11,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = "Maha25ScholarPathSecureKey"
 
-# ---------------- SQLITE ----------------
+# ---------------- DB ----------------
 
 def get_db():
     conn = sqlite3.connect("data.db")
@@ -38,11 +37,9 @@ app.config['MAIL_DEFAULT_SENDER'] = 'maha25scholarpath.noreply@gmail.com'
 
 mail = Mail(app)
 
-# ---------------- OTP STORAGE ----------------
+# ---------------- OTP ----------------
 
 otp_storage = {}
-
-# ---------------- VALIDATION ----------------
 
 def valid_email(email):
     return re.match(r'^[\w.-]+@[\w.-]+\.\w+$', email)
@@ -57,17 +54,7 @@ def index():
 def home():
     return render_template("home.html")
 
-# ---------------- 🔥 ASYNC EMAIL SENDER (FIX) ----------------
-
-def send_email_async(app, msg):
-    with app.app_context():
-        try:
-            mail.send(msg)
-            print("OTP sent successfully")
-        except Exception as e:
-            print("Mail error:", e)
-
-# ---------------- OTP SEND (FIXED) ----------------
+# ---------------- OTP SEND (FIXED - NO FAKE SUCCESS) ----------------
 
 @app.route("/send_otp", methods=["POST"])
 def send_otp():
@@ -85,13 +72,14 @@ def send_otp():
         body=f"Your OTP is: {otp}"
     )
 
-    # 🔥 NON-BLOCKING SEND (IMPORTANT FIX)
-    threading.Thread(
-        target=send_email_async,
-        args=(app, msg)
-    ).start()
+    try:
+        mail.send(msg)
+        logging.info(f"OTP sent to {email}")
+        return render_template("verify.html", email=email)
 
-    return render_template("verify.html", email=email)
+    except Exception as e:
+        logging.error(f"OTP FAILED for {email}: {e}")
+        return "Failed to send OTP. Try again."
 
 # ---------------- VERIFY OTP ----------------
 
@@ -134,8 +122,8 @@ def register():
 
 @app.route("/login", methods=["POST"])
 def login():
-    email = request.form["email"].strip()
-    password = request.form["password"].strip()
+    email = request.form["email"]
+    password = request.form["password"]
 
     conn = get_db()
     cursor = conn.cursor()
@@ -154,7 +142,7 @@ def login():
 
     return "Invalid login"
 
-# ---------------- EDUCATION LEVELS ----------------
+# ---------------- SEARCH (SAFE SQLITE) ----------------
 
 education_levels = {
     "10th": 1,
@@ -162,8 +150,6 @@ education_levels = {
     "Graduate": 3,
     "Post-Graduate": 4
 }
-
-# ---------------- SEARCH (SQLITE SAFE) ----------------
 
 @app.route("/search", methods=["POST"])
 def search():
@@ -185,7 +171,6 @@ def search():
 
     conn = get_db()
     cursor = conn.cursor()
-
     cursor.execute("SELECT * FROM schemes")
     rows = cursor.fetchall()
     conn.close()
@@ -195,19 +180,13 @@ def search():
 
     for r in rows:
         try:
-            scheme_caste = str(r["caste"]).lower()
-            scheme_gender = str(r["gender"]).lower()
-            scheme_income = int(r["income"])
-            scheme_level = education_levels.get(str(r["education"]), 0)
-
             if (
-                (scheme_caste in [caste, "all"]) and
-                (scheme_gender in [gender, "all", "any"]) and
-                income <= scheme_income and
-                user_level >= scheme_level
+                str(r["caste"]).lower() in [caste, "all"] and
+                str(r["gender"]).lower() in [gender, "all", "any"] and
+                income <= int(r["income"]) and
+                user_level >= education_levels.get(r["education"], 0)
             ):
                 eligible.append(dict(r))
-
         except:
             pass
 
