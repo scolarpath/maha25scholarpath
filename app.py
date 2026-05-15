@@ -15,10 +15,10 @@ app.secret_key = "Maha25ScholarPathSecureKey"
 
 # ---------------- CONFIG ----------------
 
-FAST2SMS_API_KEY = "YOUR_FAST2SMS_API_KEY"
+FAST2SMS_API_KEY = "Xk2LJY05znqufLKP90C8j995dqaSlJjpIhwxigc0hFpDIWD62JzWUhNrAEaf"
 
-EMAIL_SENDER = "yourgmail@gmail.com"
-EMAIL_PASSWORD = "your_app_password"   # Gmail App Password ONLY
+EMAIL_SENDER = "maha25scholarpath.noreply@gmail.com"
+EMAIL_PASSWORD = "dkne cbte vsbz tnai"   # Gmail App Password ONLY
 
 OTP_EXPIRY_TIME = 300  # 5 minutes
 
