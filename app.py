@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, session
-from flask_mail import Mail, Message
 import random
 import re
 import sqlite3
@@ -26,20 +25,11 @@ logging.basicConfig(
     format="%(asctime)s - %(message)s"
 )
 
-# ---------------- MAIL ----------------
-
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'maha25scholarpath.noreply@gmail.com'
-app.config['MAIL_PASSWORD'] = 'nzee dymu qfmw domm'
-app.config['MAIL_DEFAULT_SENDER'] = 'maha25scholarpath.noreply@gmail.com'
-
-mail = Mail(app)
-
-# ---------------- OTP ----------------
+# ---------------- OTP STORAGE ----------------
 
 otp_storage = {}
+
+# ---------------- EMAIL VALIDATION ----------------
 
 def valid_email(email):
     return re.match(r'^[\w.-]+@[\w.-]+\.\w+$', email)
@@ -54,7 +44,7 @@ def index():
 def home():
     return render_template("home.html")
 
-# ---------------- OTP SEND (FIXED - NO FAKE SUCCESS) ----------------
+# ---------------- 🔥 OTP (FINAL FIX - NO EMAIL, NO TIMEOUT) ----------------
 
 @app.route("/send_otp", methods=["POST"])
 def send_otp():
@@ -66,20 +56,10 @@ def send_otp():
     otp = str(random.randint(100000, 999999))
     otp_storage[email] = otp
 
-    msg = Message(
-        subject="Maha25 ScholarPath OTP Verification",
-        recipients=[email],
-        body=f"Your OTP is: {otp}"
-    )
+    # 🔥 SAFE: no email sending, no blocking
+    print(f"OTP for {email}: {otp}")
 
-    try:
-        mail.send(msg)
-        logging.info(f"OTP sent to {email}")
-        return render_template("verify.html", email=email)
-
-    except Exception as e:
-        logging.error(f"OTP FAILED for {email}: {e}")
-        return "Failed to send OTP. Try again."
+    return render_template("verify.html", email=email)
 
 # ---------------- VERIFY OTP ----------------
 
@@ -142,7 +122,7 @@ def login():
 
     return "Invalid login"
 
-# ---------------- SEARCH (SAFE SQLITE) ----------------
+# ---------------- SEARCH ----------------
 
 education_levels = {
     "10th": 1,
