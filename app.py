@@ -103,6 +103,8 @@ def send_otp():
     if not email:
         return "Email required"
 
+    email = email.strip().lower()   # 🔥 IMPORTANT FIX
+
     otp = str(random.randint(100000, 999999))
 
     otp_storage[email] = {
@@ -112,7 +114,7 @@ def send_otp():
 
     try:
         message = Mail(
-            from_email="maha25scholarpath.noreply@gmail.com",  # must be VERIFIED in SendGrid
+            from_email="maha25scholarpath.noreply@gmail.com",
             to_emails=email,
             subject="OTP Verification - Maha25 ScholarPath",
             plain_text_content=f"Your OTP is: {otp}"
@@ -132,15 +134,30 @@ def send_otp():
 # ---------------- VERIFY OTP ----------------
 @app.route("/verify_otp", methods=["POST"])
 def verify_otp():
-    email = request.form["email"]
-    otp = request.form["otp"]
+    email = request.form.get("email")
+    otp = request.form.get("otp")
 
-    if email in otp_storage and otp_storage[email]["otp"] == otp:
+    if not email or not otp:
+        return "Missing data"
+
+    email = email.strip().lower()
+    otp = otp.strip()
+
+    data = otp_storage.get(email)
+
+    if not data:
+        return "OTP not found (send again)"
+
+    if time.time() - data["time"] > OTP_EXPIRY:
+        otp_storage.pop(email, None)
+        return "OTP expired"
+
+    if str(data["otp"]) == str(otp):
         session["verified"] = True
+        otp_storage.pop(email, None)
         return redirect("/home")
 
     return "Invalid OTP"
-
 # ---------------- SEARCH ----------------
 @app.route("/search", methods=["POST"])
 def search():
