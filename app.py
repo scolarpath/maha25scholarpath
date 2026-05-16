@@ -6,6 +6,8 @@ import re
 import time
 import logging
 import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 # ---------------- APP ----------------
 app = Flask(__name__)
@@ -59,32 +61,30 @@ def home():
 def send_otp():
     email = request.form.get("email")
 
-    print("EMAIL RECEIVED:", email)
-
-    if not email or not valid_email(email):
-        return "Invalid email"
+    if not email:
+        return "Email required"
 
     otp = str(random.randint(100000, 999999))
     otp_storage[email] = {"otp": otp, "time": time.time()}
 
     try:
-        msg = Message(
+        message = Mail(
+            from_email="your_verified_sendgrid_email@example.com",
+            to_emails=email,
             subject="OTP Verification",
-            recipients=[email]
+            plain_text_content=f"Your OTP is: {otp}"
         )
-        msg.body = f"Your OTP is: {otp}"
 
-        print("SENDING EMAIL...")
+        sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
+        sg.send(message)
 
-        mail.send(msg)
-
-        print("EMAIL SENT SUCCESSFULLY")
+        print("OTP SENT VIA SENDGRID")
 
         return "OTP sent successfully"
 
     except Exception as e:
-        print("EMAIL ERROR:", str(e))
-        return f"Failed to send OTP: {str(e)}"
+        print("SENDGRID ERROR:", str(e))
+        return f"Error sending OTP: {str(e)}"
 
 # ---------------- VERIFY OTP ----------------
 @app.route("/verify_otp", methods=["POST"])
