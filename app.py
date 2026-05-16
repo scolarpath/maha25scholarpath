@@ -1,96 +1,48 @@
 from flask import Flask, render_template, request, redirect, session
+from flask_mail import Mail, Message
+import sqlite3
 import random
 import re
-import sqlite3
-import requests
-import logging
-import smtplib
 import time
-from email.mime.text import MIMEText
+import logging
+import os
 
 # ---------------- APP ----------------
-
 app = Flask(__name__)
-app.secret_key = "Maha25ScholarPathSecureKey"
 
-# ---------------- CONFIG ----------------
+# REQUIRED for Render sessions
+app.secret_key = os.environ.get("SECRET_KEY", "dev_secret_key")
 
-FAST2SMS_API_KEY = "Xk2LJY05znqufLKP90C8j995dqaSlJjpIhwxigc0hFpDIWD62JzWUhNrAEaf"
+# ---------------- MAIL CONFIG (RENDER SAFE) ----------------
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get("EMAIL_USER", "your_email@gmail.com")
+app.config['MAIL_PASSWORD'] = os.environ.get("EMAIL_PASS", "your_app_password")
+app.config['MAIL_DEFAULT_SENDER'] = app.config['MAIL_USERNAME']
 
-EMAIL_SENDER = "maha25scholarpath.noreply@gmail.com"
-EMAIL_PASSWORD = "aisnmdbhgumdwhm"   # Gmail App Password ONLY
-
-OTP_EXPIRY_TIME = 300  # 5 minutes
-
-# ---------------- DB ----------------
-
-def get_db():
-    conn = sqlite3.connect("data.db")
-    conn.row_factory = sqlite3.Row
-    return conn
+mail = Mail(app)
 
 # ---------------- LOGGING ----------------
-
 logging.basicConfig(
     filename="app.log",
     level=logging.INFO,
     format="%(asctime)s - %(message)s"
 )
 
-# ---------------- OTP STORAGE ----------------
-# format: { email: {"otp": "123456", "time": timestamp, "number": phone} }
+# ---------------- DB ----------------
+def get_db():
+    conn = sqlite3.connect("data.db")
+    conn.row_factory = sqlite3.Row
+    return conn
 
+# ---------------- OTP STORAGE ----------------
 otp_storage = {}
+OTP_EXPIRY_TIME = 300  # 5 minutes
 
 # ---------------- VALIDATION ----------------
-
 def valid_email(email):
-    return re.match(r'^[\w.-]+@[\w.-]+\.\w+$', email)
-
-# ---------------- SMS OTP ----------------
-
-def send_sms_otp(number, otp):
-    url = "https://www.fast2sms.com/dev/bulkV2"
-
-    payload = {
-        "authorization": FAST2SMS_API_KEY,
-        "route": "otp",
-        "variables_values": otp,
-        "numbers": number
-    }
-
-    response = requests.post(url, data=payload)
-
-    logging.info(f"SMS response: {response.text}")
-
-    if response.status_code != 200:
-        raise Exception("SMS sending failed")
-
-# ---------------- EMAIL OTP ----------------
-
-def send_email_otp(email, otp):
-    try:
-        msg = MIMEText(f"Your OTP for verification is: {otp}")
-        msg["Subject"] = "OTP Verification"
-        msg["From"] = EMAIL_SENDER
-        msg["To"] = email
-
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.ehlo()
-        server.starttls()
-        server.ehlo()
-
-        server.login(EMAIL_SENDER, EMAIL_PASSWORD.strip())
-
-        server.sendmail(EMAIL_SENDER, email, msg.as_string())
-
-        server.quit()
-
-        logging.info(f"Email OTP sent to {email}")
-
-    except Exception as e:
-        logging.error(f"Email failed: {e}")
-        print("EMAIL ERROR:", e)
+    return re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email)
 
 # ---------------- ROUTES ----------------
 
@@ -103,40 +55,37 @@ def home():
     return render_template("home.html")
 
 # ---------------- SEND OTP ----------------
-
 @app.route("/send_otp", methods=["POST"])
 def send_otp():
     email = request.form.get("email")
-    number = request.form.get("number")
 
-    if not valid_email(email):
-        return "Invalid email format"
-
-    if not number:
-        return "Phone number required"
+    if not email or not valid_email(email):
+        return "Invalid email"
 
     otp = str(random.randint(100000, 999999))
 
     otp_storage[email] = {
         "otp": otp,
-        "time": time.time(),
-        "number": number
+        "time": time.time()
     }
 
     try:
-        send_sms_otp(number, otp)
-        send_email_otp(email, otp)
+        msg = Message(
+            subject="ScholarPath OTP Verification",
+            recipients=[email]
+        )
+        msg.body = f"Your OTP is: {otp}"
 
-        logging.info(f"OTP sent to {email}, {number}")
+        mail.send(msg)
 
+        logging.info(f"OTP sent to {email}")
         return render_template("verify.html", email=email)
 
     except Exception as e:
-        logging.error(f"OTP failed: {e}")
+        logging.error(f"OTP send failed: {e}")
         return "Failed to send OTP"
 
 # ---------------- VERIFY OTP ----------------
-
 @app.route("/verify_otp", methods=["POST"])
 def verify_otp():
     email = request.form.get("email")
@@ -145,9 +94,8 @@ def verify_otp():
     data = otp_storage.get(email)
 
     if not data:
-        return "OTP not found or expired"
+        return "OTP expired or not found"
 
-    # check expiry
     if time.time() - data["time"] > OTP_EXPIRY_TIME:
         otp_storage.pop(email, None)
         return "OTP expired"
@@ -160,17 +108,19 @@ def verify_otp():
     return "Invalid OTP"
 
 # ---------------- SEARCH ----------------
-
 @app.route("/search", methods=["POST"])
 def search():
     caste = request.form["caste"].lower()
     gender = request.form["gender"].lower()
     income = int(request.form["income"])
-    education = request.form["education"]
     age = int(request.form["age"])
 
     if age > 25:
-        return render_template("output.html", schemes=[], message="Only users aged 25 or below allowed")
+        return render_template(
+            "output.html",
+            schemes=[],
+            message="Only users aged 25 or below allowed"
+        )
 
     conn = get_db()
     cursor = conn.cursor()
@@ -193,7 +143,7 @@ def search():
 
     return render_template("output.html", schemes=eligible)
 
-# ---------------- RUN ----------------
-
+# ---------------- RUN (RENDER SAFE) ----------------
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
