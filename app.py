@@ -18,7 +18,7 @@ app.secret_key = "Maha25ScholarPathSecureKey"
 FAST2SMS_API_KEY = "Xk2LJY05znqufLKP90C8j995dqaSlJjpIhwxigc0hFpDIWD62JzWUhNrAEaf"
 
 EMAIL_SENDER = "maha25scholarpath.noreply@gmail.com"
-EMAIL_PASSWORD = "dkne cbte vsbz tnai"   # Gmail App Password ONLY
+EMAIL_PASSWORD = "aisnmdbhgumdwhm"   # Gmail App Password ONLY
 
 OTP_EXPIRY_TIME = 300  # 5 minutes
 
@@ -70,31 +70,27 @@ def send_sms_otp(number, otp):
 
 def send_email_otp(email, otp):
     try:
-        print("EMAIL FUNCTION STARTED")
-
         msg = MIMEText(f"Your OTP for verification is: {otp}")
         msg["Subject"] = "OTP Verification"
         msg["From"] = EMAIL_SENDER
         msg["To"] = email
 
         server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.set_debuglevel(1)  # shows real connection logs
+        server.ehlo()
         server.starttls()
+        server.ehlo()
 
-        print("Logging into Gmail...")
-        server.login(EMAIL_SENDER, EMAIL_PASSWORD)
+        server.login(EMAIL_SENDER, EMAIL_PASSWORD.strip())
 
-        print("Sending email...")
         server.sendmail(EMAIL_SENDER, email, msg.as_string())
 
         server.quit()
 
-        print("EMAIL SENT SUCCESSFULLY")
         logging.info(f"Email OTP sent to {email}")
 
     except Exception as e:
-        print("EMAIL ERROR:", e)
         logging.error(f"Email failed: {e}")
+        print("EMAIL ERROR:", e)
 
 # ---------------- ROUTES ----------------
 
