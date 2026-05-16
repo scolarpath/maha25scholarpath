@@ -110,7 +110,7 @@ def send_otp():
 
     try:
         message = Mail(
-            from_email="YOUR_VERIFIED_EMAIL@gmail.com",  # 🔴 CHANGE THIS
+            from_email="maha25scholarpath.noreply@gmail.com",  # 🔴 CHANGE THIS
             to_emails=email,
             subject="OTP Verification",
             plain_text_content=f"Your OTP is: {otp}"
