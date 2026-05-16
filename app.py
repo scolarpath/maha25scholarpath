@@ -10,18 +10,18 @@ import os
 # ---------------- APP ----------------
 app = Flask(__name__)
 
-# REQUIRED for Render sessions
+# REQUIRED for sessions
 app.secret_key = os.environ.get("SECRET_KEY", "dev_secret_key")
 
-# ---------------- MAIL CONFIG (RENDER SAFE) ----------------
+# ---------------- MAIL CONFIG ----------------
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.environ.get("EMAIL_USER", "your_email@gmail.com")
-app.config['MAIL_PASSWORD'] = os.environ.get("EMAIL_PASS", "your_app_password")
+app.config['MAIL_USERNAME'] = os.environ.get("EMAIL_USER")
+app.config['MAIL_PASSWORD'] = os.environ.get("EMAIL_PASS")
 app.config['MAIL_DEFAULT_SENDER'] = app.config['MAIL_USERNAME']
 
-mail = Mail(app)
+mail = Mail(app)   # ✅ FIXED (IMPORTANT)
 
 # ---------------- LOGGING ----------------
 logging.basicConfig(
@@ -38,9 +38,9 @@ def get_db():
 
 # ---------------- OTP STORAGE ----------------
 otp_storage = {}
-OTP_EXPIRY_TIME = 300  # 5 minutes
+OTP_EXPIRY_TIME = 300
 
-# ---------------- VALIDATION ----------------
+# ---------------- EMAIL VALIDATION ----------------
 def valid_email(email):
     return re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email)
 
@@ -61,27 +61,30 @@ def send_otp():
 
     print("EMAIL RECEIVED:", email)
 
+    if not email or not valid_email(email):
+        return "Invalid email"
+
     otp = str(random.randint(100000, 999999))
     otp_storage[email] = {"otp": otp, "time": time.time()}
 
     try:
         msg = Message(
-            subject="OTP Test",
+            subject="OTP Verification",
             recipients=[email]
         )
-        msg.body = f"OTP is {otp}"
+        msg.body = f"Your OTP is: {otp}"
 
         print("SENDING EMAIL...")
 
         mail.send(msg)
 
-        print("EMAIL SENT FUNCTION CALLED")
+        print("EMAIL SENT SUCCESSFULLY")
 
-        return "OTP sent (check email)"
+        return "OTP sent successfully"
 
     except Exception as e:
-        print("EMAIL ERROR:", e)
-        return "Failed"
+        print("EMAIL ERROR:", str(e))
+        return f"Failed to send OTP: {str(e)}"
 
 # ---------------- VERIFY OTP ----------------
 @app.route("/verify_otp", methods=["POST"])
@@ -141,7 +144,7 @@ def search():
 
     return render_template("output.html", schemes=eligible)
 
-# ---------------- RUN (RENDER SAFE) ----------------
+# ---------------- RUN ----------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
