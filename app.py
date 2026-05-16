@@ -69,7 +69,7 @@ def send_otp():
 
     try:
         message = Mail(
-            from_email="your_verified_sendgrid_email@example.com",
+            from_email="maha25scholarpath.noreply@gmail.com",
             to_emails=email,
             subject="OTP Verification",
             plain_text_content=f"Your OTP is: {otp}"
