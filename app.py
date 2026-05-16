@@ -83,8 +83,8 @@ def send_otp():
         return "OTP sent successfully"
 
     except Exception as e:
-    print("SENDGRID FULL ERROR:", repr(e))
-    return str(e)
+     print("SENDGRID FULL ERROR:", repr(e))
+     return str(e)
 
 # ---------------- VERIFY OTP ----------------
 @app.route("/verify_otp", methods=["POST"])
