@@ -3,22 +3,17 @@ import sqlite3
 import random
 import re
 import time
-import logging
 import os
-
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+import logging
+import smtplib
+from email.mime.text import MIMEText
 
 # ---------------- APP ----------------
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "dev_secret_key")
+app.secret_key = os.environ.get("SECRET_KEY", "dev_secret")
 
 # ---------------- LOGGING ----------------
-logging.basicConfig(
-    filename="app.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO)
 
 # ---------------- DB ----------------
 def get_db():
@@ -28,14 +23,17 @@ def get_db():
 
 # ---------------- OTP STORAGE ----------------
 otp_storage = {}
-OTP_EXPIRY_TIME = 300
+OTP_EXPIRY = 300
 
-# ---------------- VALIDATION ----------------
+# ---------------- EMAIL CONFIG ----------------
+EMAIL_USER = os.environ.get("EMAIL_USER")
+EMAIL_PASS = os.environ.get("EMAIL_PASS")
+
+# ---------------- VALID EMAIL ----------------
 def valid_email(email):
     return re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email)
 
-# ---------------- ROUTES ----------------
-
+# ---------------- HOME ----------------
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -52,61 +50,7 @@ def information():
 @app.route("/set_language/<lang>")
 def set_language(lang):
     session["language"] = lang
-    return redirect(request.referrer or "/home")
-
-# ---------------- SEND OTP (SENDGRID) ----------------
-@app.route("/send_otp", methods=["POST"])
-def send_otp():
-    email = request.form.get("email")
-
-    if not email:
-        return "Email required"
-
-    if not valid_email(email):
-        return "Invalid email format"
-
-    otp = str(random.randint(100000, 999999))
-    otp_storage[email] = {"otp": otp, "time": time.time()}
-
-    try:
-        message = Mail(
-            from_email="maha25scholarpath.noreply@gmail.com",  # MUST match SendGrid verified sender
-            to_emails=email,
-            subject="OTP Verification",
-            plain_text_content=f"Your OTP is: {otp}"
-        )
-
-        sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
-        sg.send(message)
-
-        return "OTP sent successfully"
-
-    except Exception as e:
-        print("SENDGRID ERROR:", repr(e))
-        return str(e)
-
-# ---------------- VERIFY OTP ----------------
-@app.route("/verify_otp", methods=["POST"])
-def verify_otp():
-    email = request.form.get("email")
-    user_otp = request.form.get("otp")
-
-    data = otp_storage.get(email)
-
-    if not data:
-        return "OTP not found"
-
-    if time.time() - data["time"] > OTP_EXPIRY_TIME:
-        otp_storage.pop(email, None)
-        return "OTP expired"
-
-    if data["otp"] == user_otp:
-        session["verified_email"] = email
-        session["email"] = email
-        otp_storage.pop(email, None)
-        return redirect("/home")
-
-    return "Invalid OTP"
+    return redirect(request.referrer or "/")
 
 # ---------------- LOGIN ----------------
 @app.route("/login", methods=["POST"])
@@ -114,19 +58,16 @@ def login():
     email = request.form["email"]
     password = request.form["password"]
 
-    conn = get_db()
-    cur = conn.cursor()
-
+    db = get_db()
+    cur = db.cursor()
     cur.execute("SELECT * FROM users WHERE email=? AND password=?", (email, password))
     user = cur.fetchone()
-    conn.close()
 
     if user:
         session["user"] = email
-        session["email"] = email
         return redirect("/information")
 
-    return "Invalid email or password"
+    return "Invalid login"
 
 # ---------------- REGISTER ----------------
 @app.route("/register", methods=["POST"])
@@ -136,23 +77,66 @@ def register():
     password = request.form["password"]
     otp = request.form["otp"]
 
-    if otp_storage.get(email, {}).get("otp") != otp:
+    if email not in otp_storage:
+        return "OTP not found"
+
+    if otp_storage[email]["otp"] != otp:
         return "Invalid OTP"
 
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute(
-        "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-        (name, email, password)
-    )
-
-    conn.commit()
-    conn.close()
+    db = get_db()
+    cur = db.cursor()
+    cur.execute("INSERT INTO users(name,email,password) VALUES (?,?,?)",
+                (name, email, password))
+    db.commit()
 
     otp_storage.pop(email, None)
 
     return redirect("/home")
+
+# ---------------- SEND OTP ----------------
+@app.route("/send_otp", methods=["POST"])
+def send_otp():
+    email = request.form.get("email")
+
+    if not valid_email(email):
+        return "Invalid email"
+
+    otp = str(random.randint(100000, 999999))
+
+    otp_storage[email] = {
+        "otp": otp,
+        "time": time.time()
+    }
+
+    try:
+        msg = MIMEText(f"Your OTP is {otp}")
+        msg["Subject"] = "OTP Verification"
+        msg["From"] = EMAIL_USER
+        msg["To"] = email
+
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(EMAIL_USER, EMAIL_PASS)
+        server.sendmail(EMAIL_USER, email, msg.as_string())
+        server.quit()
+
+        return "OTP sent"
+
+    except Exception as e:
+        logging.error(e)
+        return "Email failed"
+
+# ---------------- VERIFY OTP ----------------
+@app.route("/verify_otp", methods=["POST"])
+def verify_otp():
+    email = request.form["email"]
+    otp = request.form["otp"]
+
+    if email in otp_storage and otp_storage[email]["otp"] == otp:
+        session["verified"] = True
+        return redirect("/home")
+
+    return "Invalid OTP"
 
 # ---------------- SEARCH ----------------
 @app.route("/search", methods=["POST"])
@@ -163,31 +147,28 @@ def search():
     age = int(request.form["age"])
 
     if age > 25:
-        msg = "Only users aged 25 or below allowed"
-        return render_template("output.html", schemes=[], message=msg)
+        return render_template("output.html", schemes=[], message="Age limit exceeded")
 
-    conn = get_db()
-    cur = conn.cursor()
+    db = get_db()
+    cur = db.cursor()
     cur.execute("SELECT * FROM schemes")
-    rows = cur.fetchall()
-    conn.close()
+    schemes = cur.fetchall()
 
-    eligible = []
+    result = []
 
-    for r in rows:
+    for s in schemes:
         try:
             if (
-                str(r["caste"]).lower() in [caste, "all"] and
-                str(r["gender"]).lower() in [gender, "all", "any"] and
-                income <= int(r["income"])
+                s["caste"].lower() in [caste, "all"] and
+                s["gender"].lower() in [gender, "all"] and
+                income <= int(s["income"])
             ):
-                eligible.append(dict(r))
+                result.append(dict(s))
         except:
             pass
 
-    return render_template("output.html", schemes=eligible)
+    return render_template("output.html", schemes=result)
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
