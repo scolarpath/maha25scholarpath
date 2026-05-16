@@ -98,8 +98,8 @@ def register():
 def send_otp():
     email = request.form.get("email")
 
-    if not valid_email(email):
-        return "Invalid email"
+    if not email:
+        return "Email required"
 
     otp = str(random.randint(100000, 999999))
 
@@ -109,22 +109,23 @@ def send_otp():
     }
 
     try:
-        msg = MIMEText(f"Your OTP is {otp}")
-        msg["Subject"] = "OTP Verification"
-        msg["From"] = EMAIL_USER
-        msg["To"] = email
+        message = Mail(
+            from_email="YOUR_VERIFIED_EMAIL@gmail.com",  # 🔴 CHANGE THIS
+            to_emails=email,
+            subject="OTP Verification",
+            plain_text_content=f"Your OTP is: {otp}"
+        )
 
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.starttls()
-        server.login(EMAIL_USER, EMAIL_PASS)
-        server.sendmail(EMAIL_USER, email, msg.as_string())
-        server.quit()
+        sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
+        sg.send(message)
 
-        return "OTP sent"
+        print("OTP SENT SUCCESSFULLY")
+
+        return "OTP sent successfully"
 
     except Exception as e:
-        logging.error(e)
-        return "Email failed"
+        print("SENDGRID FULL ERROR:", repr(e))
+        return str(e)
 
 # ---------------- VERIFY OTP ----------------
 @app.route("/verify_otp", methods=["POST"])
