@@ -1,29 +1,17 @@
 from flask import Flask, render_template, request, redirect, session
-from flask_mail import Mail, Message
 import sqlite3
 import random
 import re
 import time
 import logging
 import os
+
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
 # ---------------- APP ----------------
 app = Flask(__name__)
-
-# REQUIRED for sessions
 app.secret_key = os.environ.get("SECRET_KEY", "dev_secret_key")
-
-# ---------------- MAIL CONFIG ----------------
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.environ.get("EMAIL_USER")
-app.config['MAIL_PASSWORD'] = os.environ.get("EMAIL_PASS")
-app.config['MAIL_DEFAULT_SENDER'] = app.config['MAIL_USERNAME']
-
-mail = Mail(app)   # ✅ FIXED (IMPORTANT)
 
 # ---------------- LOGGING ----------------
 logging.basicConfig(
@@ -42,7 +30,7 @@ def get_db():
 otp_storage = {}
 OTP_EXPIRY_TIME = 300
 
-# ---------------- EMAIL VALIDATION ----------------
+# ---------------- VALIDATION ----------------
 def valid_email(email):
     return re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email)
 
@@ -56,7 +44,17 @@ def index():
 def home():
     return render_template("home.html")
 
-# ---------------- SEND OTP ----------------
+@app.route("/information")
+def information():
+    return render_template("information.html")
+
+# ---------------- LANGUAGE ----------------
+@app.route("/set_language/<lang>")
+def set_language(lang):
+    session["language"] = lang
+    return redirect(request.referrer or "/home")
+
+# ---------------- SEND OTP (SENDGRID) ----------------
 @app.route("/send_otp", methods=["POST"])
 def send_otp():
     email = request.form.get("email")
@@ -64,12 +62,15 @@ def send_otp():
     if not email:
         return "Email required"
 
+    if not valid_email(email):
+        return "Invalid email format"
+
     otp = str(random.randint(100000, 999999))
     otp_storage[email] = {"otp": otp, "time": time.time()}
 
     try:
         message = Mail(
-            from_email="maha25scholarpath.noreply@gmail.com",
+            from_email="your_verified_sender@gmail.com",  # MUST match SendGrid verified sender
             to_emails=email,
             subject="OTP Verification",
             plain_text_content=f"Your OTP is: {otp}"
@@ -78,13 +79,11 @@ def send_otp():
         sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
         sg.send(message)
 
-        print("OTP SENT VIA SENDGRID")
-
         return "OTP sent successfully"
 
     except Exception as e:
-     print("SENDGRID FULL ERROR:", repr(e))
-     return str(e)
+        print("SENDGRID ERROR:", repr(e))
+        return str(e)
 
 # ---------------- VERIFY OTP ----------------
 @app.route("/verify_otp", methods=["POST"])
@@ -95,7 +94,7 @@ def verify_otp():
     data = otp_storage.get(email)
 
     if not data:
-        return "OTP expired or not found"
+        return "OTP not found"
 
     if time.time() - data["time"] > OTP_EXPIRY_TIME:
         otp_storage.pop(email, None)
@@ -103,10 +102,57 @@ def verify_otp():
 
     if data["otp"] == user_otp:
         session["verified_email"] = email
+        session["email"] = email
         otp_storage.pop(email, None)
         return redirect("/home")
 
     return "Invalid OTP"
+
+# ---------------- LOGIN ----------------
+@app.route("/login", methods=["POST"])
+def login():
+    email = request.form["email"]
+    password = request.form["password"]
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM users WHERE email=? AND password=?", (email, password))
+    user = cur.fetchone()
+    conn.close()
+
+    if user:
+        session["user"] = email
+        session["email"] = email
+        return redirect("/information")
+
+    return "Invalid email or password"
+
+# ---------------- REGISTER ----------------
+@app.route("/register", methods=["POST"])
+def register():
+    name = request.form["name"]
+    email = request.form["email"]
+    password = request.form["password"]
+    otp = request.form["otp"]
+
+    if otp_storage.get(email, {}).get("otp") != otp:
+        return "Invalid OTP"
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+        (name, email, password)
+    )
+
+    conn.commit()
+    conn.close()
+
+    otp_storage.pop(email, None)
+
+    return redirect("/home")
 
 # ---------------- SEARCH ----------------
 @app.route("/search", methods=["POST"])
@@ -117,16 +163,13 @@ def search():
     age = int(request.form["age"])
 
     if age > 25:
-        return render_template(
-            "output.html",
-            schemes=[],
-            message="Only users aged 25 or below allowed"
-        )
+        msg = "Only users aged 25 or below allowed"
+        return render_template("output.html", schemes=[], message=msg)
 
     conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM schemes")
-    rows = cursor.fetchall()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM schemes")
+    rows = cur.fetchall()
     conn.close()
 
     eligible = []
