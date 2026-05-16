@@ -59,31 +59,29 @@ def home():
 def send_otp():
     email = request.form.get("email")
 
-    if not email or not valid_email(email):
-        return "Invalid email"
+    print("EMAIL RECEIVED:", email)
 
     otp = str(random.randint(100000, 999999))
-
-    otp_storage[email] = {
-        "otp": otp,
-        "time": time.time()
-    }
+    otp_storage[email] = {"otp": otp, "time": time.time()}
 
     try:
         msg = Message(
-            subject="ScholarPath OTP Verification",
+            subject="OTP Test",
             recipients=[email]
         )
-        msg.body = f"Your OTP is: {otp}"
+        msg.body = f"OTP is {otp}"
+
+        print("SENDING EMAIL...")
 
         mail.send(msg)
 
-        logging.info(f"OTP sent to {email}")
-        return render_template("verify.html", email=email)
+        print("EMAIL SENT FUNCTION CALLED")
+
+        return "OTP sent (check email)"
 
     except Exception as e:
-        logging.error(f"OTP send failed: {e}")
-        return "Failed to send OTP"
+        print("EMAIL ERROR:", e)
+        return "Failed"
 
 # ---------------- VERIFY OTP ----------------
 @app.route("/verify_otp", methods=["POST"])
