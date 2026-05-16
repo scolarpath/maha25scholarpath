@@ -7,6 +7,8 @@ import os
 import logging
 import smtplib
 from email.mime.text import MIMEText
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 # ---------------- APP ----------------
 app = Flask(__name__)
@@ -110,16 +112,16 @@ def send_otp():
 
     try:
         message = Mail(
-            from_email="maha25scholarpath.noreply@gmail.com",  # 🔴 CHANGE THIS
+            from_email="maha25scholarpath.noreply@gmail.com",  # must be VERIFIED in SendGrid
             to_emails=email,
-            subject="OTP Verification",
+            subject="OTP Verification - Maha25 ScholarPath",
             plain_text_content=f"Your OTP is: {otp}"
         )
 
         sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
-        sg.send(message)
+        response = sg.send(message)
 
-        print("OTP SENT SUCCESSFULLY")
+        print("SENDGRID STATUS:", response.status_code)
 
         return "OTP sent successfully"
 
