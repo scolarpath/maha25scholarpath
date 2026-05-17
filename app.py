@@ -92,6 +92,7 @@ def set_language(lang):
 
 
 # ---------------- LOGIN ----------------
+# ---------------- LOGIN ----------------
 @app.route("/login", methods=["POST"])
 def login():
 
@@ -115,12 +116,13 @@ def login():
     print("LOGIN USER:", user)
 
     if user:
-       session.permanent = True
-       session["user"] = email
+
+        session.permanent = True
+        session["user"] = email
+
         return redirect("/information")
 
     return "Invalid login"
-
 # ---------------- REGISTER ----------------
 @app.route("/register", methods=["POST"])
 def register():
