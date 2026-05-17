@@ -9,6 +9,8 @@ import smtplib
 from email.mime.text import MIMEText
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+import pandas as pd
+
 
 # ---------------- APP ----------------
 app = Flask(__name__)
@@ -23,6 +25,21 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
+def init_db():
+    conn = sqlite3.connect("data.db")
+    cur = conn.cursor()
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        email TEXT UNIQUE,
+        password TEXT
+    )
+    """)
+
+    conn.commit()
+    conn.close()
 # ---------------- OTP STORAGE ----------------
 otp_storage = {}
 OTP_EXPIRY = 300
@@ -74,36 +91,49 @@ def login():
 # ---------------- REGISTER ----------------
 @app.route("/register", methods=["POST"])
 def register():
-    name = request.form["name"]
-    email = request.form["email"]
-    password = request.form["password"]
-    otp = request.form["otp"]
 
-    if email not in otp_storage:
-        return "OTP not found"
+    name = request.form.get("name")
+    email = request.form.get("email")
+    password = request.form.get("password")
+    otp = request.form.get("otp")
 
-    if otp_storage[email]["otp"] != otp:
+    if not name or not email or not password or not otp:
+        return "Missing fields"
+
+    email = email.strip().lower()
+
+    data = otp_storage.get(email)
+
+    if not data:
+        return "Please request OTP first"
+
+    if data["otp"] != otp.strip():
         return "Invalid OTP"
 
-    db = get_db()
-    cur = db.cursor()
-    cur.execute("INSERT INTO users(name,email,password) VALUES (?,?,?)",
-                (name, email, password))
-    db.commit()
+    conn = sqlite3.connect("data.db")
+    cur = conn.cursor()
+
+    cur.execute(
+        "INSERT INTO users(name,email,password) VALUES (?,?,?)",
+        (name, email, password)
+    )
+
+    conn.commit()
+    conn.close()
 
     otp_storage.pop(email, None)
 
     return redirect("/home")
-
 # ---------------- SEND OTP ----------------
 @app.route("/send_otp", methods=["POST"])
 def send_otp():
+
     email = request.form.get("email")
 
     if not email:
         return "Email required"
 
-    email = email.strip().lower()   # 🔥 IMPORTANT FIX
+    email = email.strip().lower()
 
     otp = str(random.randint(100000, 999999))
 
@@ -116,29 +146,29 @@ def send_otp():
         message = Mail(
             from_email="maha25scholarpath.noreply@gmail.com",
             to_emails=email,
-            subject="OTP Verification - Maha25 ScholarPath",
+            subject="OTP Verification",
             plain_text_content=f"Your OTP is: {otp}"
         )
 
         sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
-        response = sg.send(message)
+        sg.send(message)
 
-        print("SENDGRID STATUS:", response.status_code)
+        print("OTP SENT")
 
         return "OTP sent successfully"
 
     except Exception as e:
-        print("SENDGRID FULL ERROR:", repr(e))
-        return str(e)
-
+        print("SENDGRID ERROR:", repr(e))
+        return "Failed to send OTP"
 # ---------------- VERIFY OTP ----------------
 @app.route("/verify_otp", methods=["POST"])
 def verify_otp():
+
     email = request.form.get("email")
     otp = request.form.get("otp")
 
     if not email or not otp:
-        return "Missing data"
+        return "Missing fields"
 
     email = email.strip().lower()
     otp = otp.strip()
@@ -146,49 +176,70 @@ def verify_otp():
     data = otp_storage.get(email)
 
     if not data:
-        return "OTP not found (send again)"
+        return "OTP expired or not found"
 
-    if time.time() - data["time"] > OTP_EXPIRY:
+    if time.time() - data["time"] > 300:
         otp_storage.pop(email, None)
         return "OTP expired"
 
-    if str(data["otp"]) == str(otp):
+    if data["otp"] == otp:
         session["verified"] = True
-        otp_storage.pop(email, None)
         return redirect("/home")
 
     return "Invalid OTP"
 # ---------------- SEARCH ----------------
 @app.route("/search", methods=["POST"])
 def search():
+
     caste = request.form["caste"].lower()
     gender = request.form["gender"].lower()
     income = int(request.form["income"])
     age = int(request.form["age"])
 
     if age > 25:
-        return render_template("output.html", schemes=[], message="Age limit exceeded")
+        return render_template(
+            "output.html",
+            schemes=[],
+            message="Only users aged 25 or below allowed"
+        )
 
-    db = get_db()
-    cur = db.cursor()
-    cur.execute("SELECT * FROM schemes")
-    schemes = cur.fetchall()
+    df = pd.read_csv("dataset.csv")
 
-    result = []
+    eligible = []
 
-    for s in schemes:
+    for _, row in df.iterrows():
+
         try:
+
+            scheme_caste = str(row["caste"]).lower()
+            scheme_gender = str(row["gender"]).lower()
+            scheme_income = int(row["annual_income"])
+
             if (
-                s["caste"].lower() in [caste, "all"] and
-                s["gender"].lower() in [gender, "all"] and
-                income <= int(s["income"])
+                scheme_caste in [caste, "all"] and
+                scheme_gender in [gender, "all", "any"] and
+                income <= scheme_income
             ):
-                result.append(dict(s))
+
+                eligible.append({
+                    "name": row["name_of_scheme"],
+                    "gender": row["gender"],
+                    "caste": row["caste"],
+                    "income": row["annual_income"],
+                    "education": row["educational_qualification"],
+                    "link": row["link"],
+                    "documents": row["required_documents"]
+                })
+
         except:
             pass
 
-    return render_template("output.html", schemes=result)
+    return render_template("output.html", schemes=eligible)
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    init_db()
+
+    port = int(os.environ.get("PORT", 5000))
+
+    app.run(host="0.0.0.0", port=port)
