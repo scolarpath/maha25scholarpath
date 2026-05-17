@@ -165,6 +165,33 @@ def register():
         return "Registration failed"
 
 
+@app.route("/all_users")
+def all_users():
+
+    db = get_db()
+    cur = db.cursor()
+
+    cur.execute("SELECT * FROM users")
+
+    users = cur.fetchall()
+
+    db.close()
+
+    result = ""
+
+    for user in users:
+        result += f"""
+        <p>
+        ID: {user['id']}<br>
+        Name: {user['name']}<br>
+        Email: {user['email']}<br>
+        Password: {user['password']}
+        </p>
+        <hr>
+        """
+
+    return result
+
 # ---------------- SEND OTP ----------------
 @app.route("/send_otp", methods=["POST"])
 def send_otp():
