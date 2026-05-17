@@ -1,0 +1,34 @@
+"id","name_of_scheme","gender","caste","annual_income","educational_qualification","required_documents","link","deadline"
+"6","Post Matric Scholarship (Maharashtra - OBC/VJNT/SBC)","All","OBC","100000","12th","Aadhaar,CasteCertificate,IncomeCertificate,Domicile,Marksheet,Bank Passbook","https://mahadbt.maharashtra.gov.in","2026-03-31"
+"8","Rajarshi Chhatrapati Shahu Maharaj Merit Scholarship","All","SC","800000","12th","Aadhaar,CasteCertificate,IncomeCertificate,10th Marksheet, Bank Details","https://mahadbt.maharashtra.gov.in","2026-03-31"
+"10","Eklavya Scholarship (Maharashtra)","All","Open","75000","Graduate","Aadhaar, Income Certificate, Domicile, Previous Year Marksheet, Bank Details","https://mahadbt.maharashtra.gov.in","2026-03-31"
+"12","Savitribai Phule Scholarship (Girl Students)","Female","SC","200000","10th","Aadhaar, Caste Certificate, Income Certificate, SchoolBonafide,Bank Details","https://mahadbt.maharashtra.gov.in","2026-03-31"
+"14","DTE Maharashtra Hostel Allowance","All","Open","800000","12th","Aadhaar, Income Certificate, Domicile, Admission Receipt, Hostel Certificate","https://mahadbt.maharashtra.gov.in","2026-03-31"
+"16","Dr. Panjabrao Deshmukh Hostel Maintenance Allowance","All","Open","800000","12th","Aadhaar, Income Certificate, Domicile, Admission Proof, Hostel Certificate","https://mahadbt.maharashtra.gov.in","2026-03-31"
+"18","Tuition Fee & Exam Fee for Tribal Students (MH)","All","ST","250000","12th","Aadhaar, ST Caste Certificate, Income Certificate, Admission Receipt","https://mahadbt.maharashtra.gov.in","2026-03-31"
+"20","Maintenance Allowance for SC Students (MH)","All","SC","250000","12th","Aadhaar, SC Certificate, Income Certificate, Admission Proof","https://mahadbt.maharashtra.gov.in","2026-03-31"
+"22","Tuition Fee & Exam Fee for SBC Students (MH)","All","SBC","800000","12th","Aadhaar, SBC Certificate, Income Certificate, Fee Receipt","https://mahadbt.maharashtra.gov.in","2026-03-31"
+"24","Tuition Fee & Exam Fee for VJNT Students (MH)","All","NT","800000","12th","Aadhaar, VJNT Certificate, Income Certificate, Fee Receipt","https://mahadbt.maharashtra.gov.in","2026-03-31"
+"26","Chief Minister Fellowship Program (Maharashtra)","All","Open","800000","Graduate","Aadhaar, Degree Certificate, Resume, Income Certificate","https://www.maharashtra.gov.in","2025-05-05"
+"28","Central Sector Scholarship for College Students","All","Open","800000","12th","Aadhaar, Income Certificate, 12th Marksheet, Bonafide Certificate","https://scholarships.gov.in","2025-10-31"
+"30","National Means-cum-Merit Scholarship (NMMS)","All","Open","350000","10th"," Aadhaar, Income Certificate, School Certificate","https://scholarships.gov.in","2025-09-30"
+"32","AICTE Pragati Scholarship (Girls)","Female","Open","800000","12th","Aadhaar, Income Certificate, Admission Proof","https://scholarships.gov.in","2025-12-15"
+"34"," AICTE Saksham Scholarship","All","All","800000","12th","Aadhaar, Disability Certificate, Income Certificate","https://scholarships.gov.in","2025-10-31"
+"36","INSPIRE Scholarship (DST)","All","Open","800000","12th"," Aadhaar, 12th Marksheet (Top 1%), Admission Proof","https://online-inspire.gov.in","2026-04-30"
+"38","Government of India Post Matric Scholarship (OBC)","All","OBC","150000","12th","Aadhaar, OBC Certificate, Income Certificate, Marksheet","https://scholarships.gov.in","2026-03-31"
+"40","Top Class Education Scheme for SC Students","All","SC","800000","12th","Aadhaar, SC Certificate, Income Certificate, Admission Letter","https://scholarships.gov.in","2025-06-02"
+"42","Top Class Education Scheme for ST Students","All","ST","600000","12th","Aadhaar, ST Certificate, Income Certificate, Admission Letter","https://scholarships.gov.in","2025-12-15"
+"44","National Fellowship for OBC Students","All","OBC","800000","Post-Graduate","Aadhaar, OBC Certificate, Income Certificate, PG Admission Proof","https://scholarships.gov.in","2025-12-15"
+"46","National Fellowship for SC Students","All","SC","800000","Post-Graduate","Aadhaar, SC Certificate, PG Admission Proof","https://scholarships.gov.in","2026-12-20"
+"48","National Overseas Scholarship (SC)","All","SC","800000","Graduate","Aadhaar, SC Certificate, Income Certificate, Passport, Admission Offer","https://scholarships.gov.in","2026-03-31"
+"50","Pre-Matric Scholarship for SC Students","All","SC","250000","10th","Aadhaar, SC Certificate, Income Certificate, School Bonafide","https://scholarships.gov.in","2026-03-31"
+"52","Pre-Matric Scholarship for ST Students","All","ST","200000","10th","Aadhaar, ST Certificate, Income Certificate, School Bonafide","https://scholarships.gov.in","2026-03-31"
+"54","Prime Minister's Scholarship Scheme (PMSS)","All","Open","800000","12th","Aadhaar, Service Certificate, Income Certificate, Marksheet","https://ksb.gov.in","2025-10-31"
+"56"," UGC Ishan Uday Scholarship","All","All","450000","12th","Aadhaar, Income Certificate, Domicile (NER), Admission Proof","https://scholarships.gov.in",NULL
+"58","PG Indira Gandhi Scholarship for Single Girl Child","Female","Open","800000","Post-Graduate","Aadhaar, Affidavit (Single Girl Child), PG Admission Proof","https://scholarships.gov.in",NULL
+"60","Merit Cum Means Scholarship (Minorities)","All","Open","250000","12th","Aadhaar, Income Certificate, Minority Certificate, Admission Proof","https://scholarships.gov.in",NULL
+"62","National Scholarship for Persons with Disabilities","All","Open","250000","12th","Aadhaar, Disability Certificate, Income Certificate, Admission Proof","https://scholarships.gov.in","2025-12-15"
+"63","Post Matric Scholarship","Any","SC","250000","10th Pass","Aadhar Card, Caste Certificate","https://scholarships.gov.in",NULL
+"64","OBC Higher Education Scholarship","Any","OBC","200000","12th Pass","Income Certificate, Aadhar Card","https://scholarships.gov.in",NULL
+"65","Girls Higher Education Scheme","Female","General","300000","12th Pass","Aadhar Card, Marksheet","https://scholarships.gov.in",NULL
+"66","Minority Pre-Matric Scholarship","Any","Minority","250000","10th Pass","Minority Certificate, Aadhar Card","https://scholarships.gov.in",NULL
