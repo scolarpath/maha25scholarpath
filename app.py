@@ -89,26 +89,24 @@ def set_language(lang):
 @app.route("/login", methods=["POST"])
 def login():
 
-    email = request.form.get("email")
-    password = request.form.get("password")
+    email = request.form["email"].strip().lower()
+    password = request.form["password"].strip()
 
-    if not email or not password:
-        return "Missing fields"
+    conn = sqlite3.connect("data.db")
+    conn.row_factory = sqlite3.Row
 
-    email = email.strip().lower()
-
-    db = get_db()
-
-    cur = db.cursor()
+    cur = conn.cursor()
 
     cur.execute(
-        "SELECT * FROM users WHERE email=? AND password=?",
+        "SELECT * FROM users WHERE lower(email)=? AND password=?",
         (email, password)
     )
 
     user = cur.fetchone()
 
-    db.close()
+    conn.close()
+
+    print("LOGIN USER:", user)
 
     if user:
         session["user"] = email
@@ -116,40 +114,35 @@ def login():
 
     return "Invalid login"
 
-
 # ---------------- REGISTER ----------------
 @app.route("/register", methods=["POST"])
 def register():
 
-    name = request.form.get("name")
-    email = request.form.get("email")
-    password = request.form.get("password")
-    otp = request.form.get("otp")
+    name = request.form.get("name").strip()
+    email = request.form.get("email").strip().lower()
+    password = request.form.get("password").strip()
+    otp = request.form.get("otp").strip()
 
     if not name or not email or not password or not otp:
         return "Missing fields"
-
-    email = email.strip().lower()
-    otp = otp.strip()
 
     data = otp_storage.get(email)
 
     if not data:
         return "Please request OTP first"
 
-    # OTP expiry
+    # OTP expiry check
     if time.time() - data["time"] > OTP_EXPIRY:
         otp_storage.pop(email, None)
         return "OTP expired"
 
-    # OTP verify
+    # OTP verification
     if data["otp"] != otp:
         return "Invalid OTP"
 
     try:
 
         db = get_db()
-
         cur = db.cursor()
 
         cur.execute(
@@ -158,7 +151,6 @@ def register():
         )
 
         db.commit()
-
         db.close()
 
         otp_storage.pop(email, None)
