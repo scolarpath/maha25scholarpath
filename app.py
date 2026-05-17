@@ -284,19 +284,18 @@ def search():
             message="Only users aged 25 or below allowed"
         )
 
-    try:
+    db = get_db()
+    cur = db.cursor()
 
-        df = pd.read_csv("dataset.csv")
+    cur.execute("SELECT * FROM schemes")
 
-    except Exception as e:
+    rows = cur.fetchall()
 
-        print("CSV ERROR:", e)
-
-        return "dataset.csv not found"
+    db.close()
 
     eligible = []
 
-    for _, row in df.iterrows():
+    for row in rows:
 
         try:
 
@@ -310,23 +309,16 @@ def search():
                 income <= scheme_income
             ):
 
-                scheme_data = {
-                  "name_of_scheme": row["name_of_scheme"],
-                  "gender": row["gender"],
-                  "caste": row["caste"],
-                  "annual_income": row["annual_income"],
-                  "educational_qualification": row["educational_qualification"],
-                  "link": row["link"],
-                  "required_documents": row["required_documents"]
-                  }
-
                 days_left = 10
                 status = "Open"
 
-                eligible.append((scheme_data, days_left, status))
+                eligible.append(
+                    (dict(row), days_left, status)
+                )
 
         except Exception as e:
-            print("ROW ERROR:", e)
+
+            print("SEARCH ERROR:", e)
 
     return render_template(
         "output.html",
