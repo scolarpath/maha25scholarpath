@@ -292,29 +292,27 @@ def search():
             ):
 
                 scheme_data = {
-                  "name": row["name_of_scheme"],
-                  "gender": row["gender"],
-                  "caste": row["caste"],
-                  "income": row["annual_income"],
-                  "education": row["educational_qualification"],
-                  "link": row["link"],
-                  "documents": row["required_documents"]
-                        }
+                    "name": row["name_of_scheme"],
+                    "gender": row["gender"],
+                    "caste": row["caste"],
+                    "income": row["annual_income"],
+                    "education": row["educational_qualification"],
+                    "link": row["link"],
+                    "documents": row["required_documents"]
+                }
 
-              days_left = 10
-              status = "Open"
+                days_left = 10
+                status = "Open"
 
-              eligible.append((scheme_data, days_left, status))
+                eligible.append((scheme_data, days_left, status))
 
-        except:
-            pass
+        except Exception as e:
+            print("ROW ERROR:", e)
 
     return render_template(
         "output.html",
         schemes=eligible
     )
-
-
 # ---------------- RUN ----------------
 if __name__ == "__main__":
 
