@@ -311,14 +311,14 @@ def search():
             ):
 
                 scheme_data = {
-                    "name": row["name_of_scheme"],
-                    "gender": row["gender"],
-                    "caste": row["caste"],
-                    "income": row["annual_income"],
-                    "education": row["educational_qualification"],
-                    "link": row["link"],
-                    "documents": row["required_documents"]
-                }
+                  "name_of_scheme": row["name_of_scheme"],
+                  "gender": row["gender"],
+                  "caste": row["caste"],
+                  "annual_income": row["annual_income"],
+                  "educational_qualification": row["educational_qualification"],
+                  "link": row["link"],
+                  "required_documents": row["required_documents"]
+                  }
 
                 days_left = 10
                 status = "Open"
