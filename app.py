@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, session
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+from datetime import datetime
 
 import sqlite3
 import pandas as pd
@@ -41,6 +42,7 @@ def get_db():
 
 # ---------------- APP ----------------
 app = Flask(__name__)
+app.config["SESSION_PERMANENT"] = True
 
 app.secret_key = os.environ.get("SECRET_KEY", "dev_secret")
 
@@ -73,6 +75,10 @@ def home():
 
 @app.route("/information")
 def information():
+
+    if "user" not in session:
+        return redirect("/home")
+
     return render_template("information.html")
 
 
@@ -109,7 +115,8 @@ def login():
     print("LOGIN USER:", user)
 
     if user:
-        session["user"] = email
+       session.permanent = True
+       session["user"] = email
         return redirect("/information")
 
     return "Invalid login"
@@ -268,9 +275,10 @@ def verify_otp():
 
 
 # ---------------- SEARCH ----------------
-# ---------------- SEARCH ----------------
 @app.route("/search", methods=["POST"])
 def search():
+
+    from datetime import datetime
 
     caste = request.form["caste"].lower()
     gender = request.form["gender"].lower()
@@ -285,7 +293,7 @@ def search():
             message="Only users aged 25 or below allowed"
         )
 
-    # READ CSV FILE
+    # READ CSV
     try:
 
         df = pd.read_csv("dataset.csv")
@@ -313,6 +321,35 @@ def search():
                 income <= scheme_income
             ):
 
+                # DEADLINE CHECK
+                deadline_str = str(row["deadline"])
+
+                try:
+
+                    deadline_date = datetime.strptime(
+                        deadline_str,
+                        "%Y-%m-%d"
+                    )
+
+                    today = datetime.today()
+
+                    days_left = (
+                        deadline_date - today
+                    ).days
+
+                    if days_left < 0:
+                        status = "closed"
+                    else:
+                        status = "open"
+
+                except Exception as e:
+
+                    print("DATE ERROR:", e)
+
+                    days_left = 0
+                    status = "open"
+
+                # STORE SCHEME
                 scheme_data = {
                     "name_of_scheme": row["name_of_scheme"],
                     "gender": row["gender"],
@@ -323,10 +360,6 @@ def search():
                     "link": row["link"],
                     "deadline": row["deadline"]
                 }
-
-                # OPTIONAL STATUS
-                days_left = 10
-                status = "Open"
 
                 eligible.append(
                     (scheme_data, days_left, status)
