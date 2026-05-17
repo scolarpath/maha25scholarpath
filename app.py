@@ -268,6 +268,7 @@ def verify_otp():
 
 
 # ---------------- SEARCH ----------------
+# ---------------- SEARCH ----------------
 @app.route("/search", methods=["POST"])
 def search():
 
@@ -284,18 +285,21 @@ def search():
             message="Only users aged 25 or below allowed"
         )
 
-    db = get_db()
-    cur = db.cursor()
+    # READ CSV FILE
+    try:
 
-    cur.execute("SELECT * FROM schemes")
+        df = pd.read_csv("dataset.csv")
 
-    rows = cur.fetchall()
+    except Exception as e:
 
-    db.close()
+        print("CSV ERROR:", e)
+
+        return "dataset.csv not found"
 
     eligible = []
 
-    for row in rows:
+    # CHECK ELIGIBILITY
+    for _, row in df.iterrows():
 
         try:
 
@@ -309,11 +313,23 @@ def search():
                 income <= scheme_income
             ):
 
+                scheme_data = {
+                    "name_of_scheme": row["name_of_scheme"],
+                    "gender": row["gender"],
+                    "caste": row["caste"],
+                    "annual_income": row["annual_income"],
+                    "educational_qualification": row["educational_qualification"],
+                    "required_documents": row["required_documents"],
+                    "link": row["link"],
+                    "deadline": row["deadline"]
+                }
+
+                # OPTIONAL STATUS
                 days_left = 10
                 status = "Open"
 
                 eligible.append(
-                    (dict(row), days_left, status)
+                    (scheme_data, days_left, status)
                 )
 
         except Exception as e:
